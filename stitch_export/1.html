@@ -1,0 +1,898 @@
+<!-- Design System -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard - The Silent Observer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#93000a",
+                        "inverse-primary": "#006a62",
+                        "surface-container-low": "#1a1c1f",
+                        "secondary-fixed-dim": "#ffb954",
+                        "secondary-fixed": "#ffddb4",
+                        "outline-variant": "#3d4947",
+                        "on-primary-fixed-variant": "#005049",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "on-primary-container": "#003430",
+                        "surface-container-high": "#282a2d",
+                        "on-primary-fixed": "#00201d",
+                        "tertiary-fixed": "#ffdad8",
+                        "primary-fixed-dim": "#66d9cc",
+                        "surface-bright": "#37393d",
+                        "secondary": "#ffb954",
+                        "surface-container": "#1e2023",
+                        "on-secondary-container": "#3c2500",
+                        "primary": "#66d9cc",
+                        "tertiary-container": "#e57373",
+                        "outline": "#869391",
+                        "on-tertiary-fixed": "#410007",
+                        "primary-container": "#26a69a",
+                        "on-error": "#690005",
+                        "inverse-surface": "#e2e2e6",
+                        "on-surface-variant": "#bcc9c6",
+                        "background": "#111316",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary": "#452b00",
+                        "primary-fixed": "#84f5e8",
+                        "on-surface": "#e2e2e6",
+                        "surface-container-highest": "#333538",
+                        "on-tertiary": "#620f17",
+                        "surface-variant": "#333538",
+                        "surface-dim": "#111316",
+                        "error": "#ffb4ab",
+                        "surface-tint": "#66d9cc",
+                        "secondary-container": "#c3841b",
+                        "inverse-on-surface": "#2f3034",
+                        "on-secondary-fixed": "#291800",
+                        "on-tertiary-container": "#5e0c15",
+                        "on-background": "#e2e2e6",
+                        "surface": "#111316",
+                        "on-tertiary-fixed-variant": "#80272b",
+                        "on-primary": "#003732",
+                        "surface-container-lowest": "#0c0e11",
+                        "tertiary": "#ffb3b1",
+                        "tertiary-fixed-dim": "#ffb3b1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .ambient-lift { box-shadow: 0 10px 40px -10px rgba(102, 217, 204, 0.05); }
+        .glass-panel { background: rgba(30, 32, 35, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        
+        /* Custom SVG Circular Progress Styles */
+        .progress-ring__circle { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col relative pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#1e2023]/80 backdrop-blur-2xl no-line tonal-transition bg-gradient-to-b from-[#111316] to-transparent flat-no-shadows ambient-lift flex justify-between items-center px-6 h-16">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-high">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="close up portrait of a confident woman with natural makeup looking directly at camera, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtj2ljgM-w4IFz_nA2FKLLox3OTRt1ufwlJYosXyTvwxKP1uuP-ewZ_jPdgiUFHM7RIwZEQmTEu48J8uRmWZ-MbPchxTS14gyLFLKlavyhCqp_yHWGsKiysSJPPj7RmgJ81Cf0g4-lyWXFEvC1AUZ5BDCN5Mr7-aBuWJIcB6AlE7ZOSf0kidEcIUkg5BNzLM_PWXcVOtwV5u9C3Xd8hduyBdaPJFXvcFAXBCDMm_q0gnI5DtdU0nFe4h8tneiUFEdEh-0r7p61ZYzl"/>
+</div>
+<span class="text-lg font-bold tracking-tighter text-white font-['Inter']">The Silent Observer</span>
+</div>
+<button class="text-[#66d9cc] hover:bg-white/5 transition-colors p-2 rounded-full scale-95 duration-200 ease-out flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 px-6 md:px-12 max-w-5xl mx-auto w-full flex flex-col gap-8 pb-40">
+<!-- Header Section -->
+<div class="flex flex-col gap-1">
+<h1 class="text-3xl font-bold tracking-tight text-on-surface">Today's Overview</h1>
+<p class="text-sm text-on-surface-variant uppercase tracking-widest font-semibold">October 24, 2023</p>
+</div>
+<!-- Large Circular Visualization & Macro Stats Block (Bento-ish) -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Circular Progress Vis (Takes up more space) -->
+<div class="md:col-span-7 bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center relative min-h-[350px] ambient-lift border border-outline-variant/15">
+<div class="relative w-64 h-64 flex items-center justify-center">
+<svg class="w-full h-full absolute inset-0" viewbox="0 0 200 200">
+<!-- Background Rings -->
+<circle class="progress-ring__circle" cx="100" cy="100" fill="none" r="90" stroke="#333538" stroke-width="8"></circle>
+<circle class="progress-ring__circle" cx="100" cy="100" fill="none" r="75" stroke="#333538" stroke-width="6"></circle>
+<circle class="progress-ring__circle" cx="100" cy="100" fill="none" r="62" stroke="#333538" stroke-width="6"></circle>
+<circle class="progress-ring__circle" cx="100" cy="100" fill="none" r="49" stroke="#333538" stroke-width="6"></circle>
+<!-- Active Rings (Simulated Progress) -->
+<!-- Calories (Outer) -->
+<circle class="progress-ring__circle" cx="100" cy="100" fill="none" r="90" stroke="#66d9cc" stroke-dasharray="565.48" stroke-dashoffset="150" stroke-linecap="round" stroke-width="8"></circle>
+<!-- Protein (Inner 1) -->
+<circle class="progress-ring__circle" cx="100" cy="100" fill="none" r="75" stroke="#ffb954" stroke-dasharray="471.23" stroke-dashoffset="100" stroke-linecap="round" stroke-width="6"></circle>
+<!-- Carbs (Inner 2) -->
+<circle class="progress-ring__circle" cx="100" cy="100" fill="none" r="62" stroke="#ffb3b1" stroke-dasharray="389.55" stroke-dashoffset="200" stroke-linecap="round" stroke-width="6"></circle>
+<!-- Fats (Inner 3) -->
+<circle class="progress-ring__circle" cx="100" cy="100" fill="none" r="49" stroke="#84f5e8" stroke-dasharray="307.87" stroke-dashoffset="80" stroke-linecap="round" stroke-width="6"></circle>
+</svg>
+<!-- Center Text -->
+<div class="absolute flex flex-col items-center justify-center text-center">
+<span class="text-4xl font-extrabold tracking-tighter text-on-surface leading-none mb-1">1,450</span>
+<span class="text-xs text-on-surface-variant uppercase tracking-widest font-medium">/ 2,200 kcal</span>
+</div>
+</div>
+</div>
+<!-- Macros Breakdown (Side panel) -->
+<div class="md:col-span-5 flex flex-col gap-4">
+<!-- Macro Item -->
+<div class="bg-surface-container rounded-xl p-5 flex items-center justify-between ambient-lift">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-on-surface">Protein</span>
+<span class="text-xs text-on-surface-variant">120g goal</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-lg font-bold text-on-surface">85g</span>
+</div>
+</div>
+<!-- Macro Item -->
+<div class="bg-surface-container rounded-xl p-5 flex items-center justify-between ambient-lift">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-tertiary"></div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-on-surface">Carbs</span>
+<span class="text-xs text-on-surface-variant">250g goal</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-lg font-bold text-on-surface">110g</span>
+</div>
+</div>
+<!-- Macro Item -->
+<div class="bg-surface-container rounded-xl p-5 flex items-center justify-between ambient-lift">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-primary-fixed"></div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-on-surface">Fats</span>
+<span class="text-xs text-on-surface-variant">65g goal</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-lg font-bold text-on-surface">42g</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Meals Timeline -->
+<div class="flex flex-col gap-4 mt-4">
+<h2 class="text-lg font-semibold tracking-tight text-on-surface mb-2">Today's Log</h2>
+<!-- Meal Card -->
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between border border-outline-variant/15">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg" data-icon="coffee">coffee</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-medium text-on-surface">Breakfast</span>
+<span class="text-xs text-on-surface-variant">8:30 AM</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-base font-bold text-on-surface">450 kcal</span>
+</div>
+</div>
+<!-- Meal Card -->
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between border border-outline-variant/15">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-lg" data-icon="restaurant">restaurant</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-medium text-on-surface">Lunch</span>
+<span class="text-xs text-on-surface-variant">1:15 PM</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-base font-bold text-on-surface">720 kcal</span>
+</div>
+</div>
+<!-- Meal Card (Empty State) -->
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between border border-outline-variant/15 opacity-50">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-lg" data-icon="dinner_dining">dinner_dining</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-medium text-on-surface">Dinner</span>
+<span class="text-xs text-on-surface-variant">Upcoming</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-base font-medium text-on-surface-variant">-- kcal</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Sticky Input Panel (Glassmorphic) -->
+<div class="fixed bottom-20 left-0 w-full z-40 px-4 md:px-0">
+<div class="glass-panel max-w-2xl mx-auto rounded-full p-2 pr-4 flex items-center gap-3 border border-outline-variant/20 shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
+<button class="w-12 h-12 rounded-full bg-surface-container-high text-primary flex items-center justify-center shrink-0 hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined" data-icon="add_a_photo">add_a_photo</span>
+</button>
+<input class="bg-transparent border-none text-on-surface placeholder-on-surface-variant focus:ring-0 w-full px-2 text-sm" placeholder="Describe what you ate..." type="text"/>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-full px-6 py-2.5 text-sm font-semibold tracking-wide shrink-0">
+                Log
+            </button>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-[#1e2023]/90 backdrop-blur-2xl no-border tonal-depth-shift bg-[#1a1c1f] shadow-[0_-4px_40px_rgba(38,166,154,0.04)] flex justify-around items-center h-20 px-8 md:hidden">
+<button class="flex flex-col items-center justify-center text-[#282a2d] px-5 py-2 hover:text-[#66d9cc]/80 active:scale-90 transition-transform">
+<span class="material-symbols-outlined mb-1 text-xl" data-icon="analytics">analytics</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-semibold">Journal</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#66d9cc] bg-gradient-to-br from-[#66d9cc]/10 to-[#26a69a]/5 rounded-full px-5 py-2 active:scale-90 transition-transform">
+<span class="material-symbols-outlined mb-1 text-xl" data-icon="insights" style="font-variation-settings: 'FILL' 1;">insights</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-semibold text-[#66d9cc]">Analytics</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#282a2d] px-5 py-2 hover:text-[#66d9cc]/80 active:scale-90 transition-transform">
+<span class="material-symbols-outlined mb-1 text-xl" data-icon="person">person</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-semibold">Profile</span>
+</button>
+</nav>
+</body></html>
+
+<!-- Dashboard -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Silent Observer - Health Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#93000a",
+                        "inverse-primary": "#006a62",
+                        "surface-container-low": "#1a1c1f",
+                        "secondary-fixed-dim": "#ffb954",
+                        "secondary-fixed": "#ffddb4",
+                        "outline-variant": "#3d4947",
+                        "on-primary-fixed-variant": "#005049",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "on-primary-container": "#003430",
+                        "surface-container-high": "#282a2d",
+                        "on-primary-fixed": "#00201d",
+                        "tertiary-fixed": "#ffdad8",
+                        "primary-fixed-dim": "#66d9cc",
+                        "surface-bright": "#37393d",
+                        "secondary": "#ffb954",
+                        "surface-container": "#1e2023",
+                        "on-secondary-container": "#3c2500",
+                        "primary": "#66d9cc",
+                        "tertiary-container": "#e57373",
+                        "outline": "#869391",
+                        "on-tertiary-fixed": "#410007",
+                        "primary-container": "#26a69a",
+                        "on-error": "#690005",
+                        "inverse-surface": "#e2e2e6",
+                        "on-surface-variant": "#bcc9c6",
+                        "background": "#111316",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary": "#452b00",
+                        "primary-fixed": "#84f5e8",
+                        "on-surface": "#e2e2e6",
+                        "surface-container-highest": "#333538",
+                        "on-tertiary": "#620f17",
+                        "surface-variant": "#333538",
+                        "surface-dim": "#111316",
+                        "error": "#ffb4ab",
+                        "surface-tint": "#66d9cc",
+                        "secondary-container": "#c3841b",
+                        "inverse-on-surface": "#2f3034",
+                        "on-secondary-fixed": "#291800",
+                        "on-tertiary-container": "#5e0c15",
+                        "on-background": "#e2e2e6",
+                        "surface": "#111316",
+                        "on-tertiary-fixed-variant": "#80272b",
+                        "on-primary": "#003732",
+                        "surface-container-lowest": "#0c0e11",
+                        "tertiary": "#ffb3b1",
+                        "tertiary-fixed-dim": "#ffb3b1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111316;
+            color: #e2e2e6;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111316;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333538;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3d4947;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#1e2023]/80 backdrop-blur-2xl no-line tonal-transition bg-gradient-to-b from-[#111316] to-transparent flat-no-shadows ambient-lift flex justify-between items-center px-6 h-16">
+<div class="flex items-center gap-3">
+<img alt="User profile photo" class="w-8 h-8 rounded-full object-cover" data-alt="close-up portrait of a woman with natural makeup in soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAov0IYeauXfAwpBPI7z4TX3ayIjcO9RYEDVi7ZVppzpdOGTFsySyAe5_h_rePjy2jlKI3TMtG4nW6y8y_bXOPXgfm5oLkbFDIFEEjCt_lpM3iUDQGjcA5AW6A0RYle-v3frxld7DHoKblkIU0d2xhM3Yfa0A3RlDub--6AiOzTmhz6dilvpZe7k63lZkqQ51a888wTvn4WQZpZN0ZJ6nJb7QkuajE2CqXjMoT8wgR3upQQZVs6k54FHMXG-2vBRzPKOYvy1JWn_fep"/>
+<span class="text-lg font-bold tracking-tighter text-white font-['Inter']">The Silent Observer</span>
+</div>
+<button class="text-[#66d9cc] hover:bg-white/5 transition-colors p-2 rounded-full scale-95 duration-200 ease-out flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-24 px-6 md:px-12 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Left Column: Identity & Primary Metrics -->
+<section class="md:col-span-4 space-y-8">
+<!-- Profile Summary Card -->
+<div class="bg-surface-container rounded-xl p-8 flex flex-col items-center text-center relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<div class="relative w-24 h-24 mb-4">
+<img alt="User profile photo" class="w-full h-full rounded-full object-cover shadow-[0_10px_40px_rgba(102,217,204,0.1)]" data-alt="close-up portrait of a woman with natural makeup in soft studio lighting, deep background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtco1oXHDXHyv1mxsyfQv1umAFSAChqVs6ZkSLEJ4muSEPdDi0jufW1q3LKeoi6nfn0x-iPD2xBgTRIE9P5OEsSdIRiewnUHXLCVIV0xNbeblzjFhc7bGWV5w6Ac60EmrwSsTwo9i4Ca3xaFU9MrYAIC39MZrDPazWok_OwBWuvmdVRUXJEleonrTeUVuQZ5JWCGdOx3C7bBkzgsDhIZdrLMHWK-KjeWZ2PxIrIREClcnnqPHQ-s3W-mETOeAsgo6J17Rt0rqTivYb"/>
+<button class="absolute bottom-0 right-0 bg-surface-container-high p-2 rounded-full text-primary hover:text-primary-container transition-colors shadow-lg">
+<span class="material-symbols-outlined text-[1rem]">edit</span>
+</button>
+</div>
+<h1 class="text-2xl font-bold tracking-tight text-on-surface mb-1">Elena Rostova</h1>
+<p class="text-sm text-on-surface-variant mb-6">elena.r@example.com</p>
+<div class="w-full grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low rounded-lg p-4 flex flex-col items-center justify-center">
+<span class="text-xs uppercase tracking-widest text-on-surface-variant mb-1">Height</span>
+<div class="flex items-baseline gap-1">
+<span class="text-xl font-semibold text-on-surface">170</span>
+<span class="text-xs text-on-surface-variant">cm</span>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 flex flex-col items-center justify-center">
+<span class="text-xs uppercase tracking-widest text-on-surface-variant mb-1">Weight</span>
+<div class="flex items-baseline gap-1">
+<span class="text-xl font-semibold text-on-surface">65.2</span>
+<span class="text-xs text-on-surface-variant">kg</span>
+</div>
+</div>
+</div>
+</div>
+<!-- BMR & BMI Bento -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container rounded-xl p-6 flex flex-col justify-between aspect-square relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
+<span class="text-xs uppercase tracking-widest text-on-surface-variant relative z-10">Basal Metabolic Rate</span>
+<div class="relative z-10">
+<div class="flex items-baseline gap-1">
+<span class="text-3xl font-bold tracking-tighter text-on-surface">1,420</span>
+</div>
+<span class="text-xs text-primary mt-1 block">kcal / day</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-xl p-6 flex flex-col justify-between aspect-square relative overflow-hidden">
+<span class="text-xs uppercase tracking-widest text-on-surface-variant relative z-10">Body Mass Index</span>
+<div class="relative z-10">
+<div class="flex items-baseline gap-2 mb-3">
+<span class="text-3xl font-bold tracking-tighter text-on-surface">22.5</span>
+<span class="text-xs font-medium text-primary px-2 py-0.5 bg-primary/10 rounded-full">Normal</span>
+</div>
+<!-- BMI Indicator Bar -->
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden flex">
+<div class="h-full bg-secondary w-1/4 opacity-30"></div>
+<div class="h-full bg-primary w-2/4"></div>
+<div class="h-full bg-error-container w-1/4 opacity-30"></div>
+</div>
+<div class="flex justify-between mt-1 text-[10px] text-on-surface-variant opacity-50">
+<span>18.5</span>
+<span>25.0</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Column: Goals & Customization -->
+<section class="md:col-span-8 space-y-8">
+<!-- Daily Goal Settings -->
+<div class="bg-surface-container rounded-xl p-8 relative">
+<div class="flex justify-between items-center mb-8">
+<h2 class="text-xl font-medium tracking-tight text-on-surface">Primary Objective</h2>
+<span class="material-symbols-outlined text-on-surface-variant">target</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<label class="cursor-pointer group">
+<input checked="" class="peer sr-only" name="goal" type="radio" value="cut"/>
+<div class="bg-surface-container-lowest rounded-xl p-5 border border-transparent peer-checked:bg-surface-container-high peer-checked:border-primary/20 transition-all duration-300 h-full flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">trending_down</span>
+<div class="w-4 h-4 rounded-full border-2 border-surface-container-highest peer-checked:border-primary peer-checked:bg-primary flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-surface-container-high scale-0 peer-checked:scale-100 transition-transform"></div>
+</div>
+</div>
+<h3 class="font-medium text-on-surface mb-1">Fat Loss</h3>
+<p class="text-xs text-on-surface-variant mt-auto">Deficit of ~500 kcal to lean out gradually.</p>
+</div>
+</label>
+<label class="cursor-pointer group">
+<input class="peer sr-only" name="goal" type="radio" value="maintain"/>
+<div class="bg-surface-container-lowest rounded-xl p-5 border border-transparent peer-checked:bg-surface-container-high peer-checked:border-primary/20 transition-all duration-300 h-full flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:scale-110 transition-transform">drag_handle</span>
+<div class="w-4 h-4 rounded-full border-2 border-surface-container-highest peer-checked:border-primary peer-checked:bg-primary flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-surface-container-high scale-0 peer-checked:scale-100 transition-transform"></div>
+</div>
+</div>
+<h3 class="font-medium text-on-surface mb-1">Maintenance</h3>
+<p class="text-xs text-on-surface-variant mt-auto">Sustain current composition.</p>
+</div>
+</label>
+<label class="cursor-pointer group">
+<input class="peer sr-only" name="goal" type="radio" value="bulk"/>
+<div class="bg-surface-container-lowest rounded-xl p-5 border border-transparent peer-checked:bg-surface-container-high peer-checked:border-primary/20 transition-all duration-300 h-full flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-secondary-fixed-dim group-hover:scale-110 transition-transform">trending_up</span>
+<div class="w-4 h-4 rounded-full border-2 border-surface-container-highest peer-checked:border-primary peer-checked:bg-primary flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-surface-container-high scale-0 peer-checked:scale-100 transition-transform"></div>
+</div>
+</div>
+<h3 class="font-medium text-on-surface mb-1">Muscle Gain</h3>
+<p class="text-xs text-on-surface-variant mt-auto">Surplus of ~300 kcal for hypertrophy.</p>
+</div>
+</label>
+</div>
+<div class="flex flex-col md:flex-row items-end gap-6 bg-surface-container-lowest rounded-xl p-6">
+<div class="flex-1 w-full">
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-3">Daily Caloric Target</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low text-on-surface text-2xl font-bold tracking-tight rounded-full py-3 px-6 border-none focus:ring-0 focus:bg-surface-container-high transition-colors" type="number" value="1950"/>
+<span class="absolute right-6 top-1/2 -translate-y-1/2 text-sm text-on-surface-variant font-medium">kcal</span>
+</div>
+</div>
+<button class="w-full md:w-auto px-8 py-3.5 bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-full font-medium shadow-[0_4px_20px_rgba(102,217,204,0.15)] hover:shadow-[0_8px_30px_rgba(102,217,204,0.25)] transition-all">
+                        Update Target
+                    </button>
+</div>
+</div>
+<!-- Macro Target Customization -->
+<div class="bg-surface-container rounded-xl p-8">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-xl font-medium tracking-tight text-on-surface">Macronutrient Distribution</h2>
+<p class="text-sm text-on-surface-variant mt-1">Fine-tune your daily ratios.</p>
+</div>
+<span class="text-2xl font-bold text-on-surface">100<span class="text-sm font-normal text-on-surface-variant">%</span></span>
+</div>
+<!-- The "Macro Bar" Context-Specific Component -->
+<div class="w-full h-3 bg-surface-container-highest rounded-md overflow-hidden flex mb-8">
+<div class="h-full bg-primary" style="width: 40%"></div>
+<div class="h-full bg-secondary" style="width: 30%"></div>
+<div class="h-full bg-tertiary" style="width: 30%"></div>
+</div>
+<div class="space-y-6">
+<!-- Protein Input -->
+<div class="flex items-center gap-6">
+<div class="w-3 h-3 rounded-full bg-primary shrink-0"></div>
+<div class="flex-1">
+<label class="text-sm font-medium text-on-surface">Protein</label>
+<p class="text-xs text-on-surface-variant">Muscle repair &amp; retention</p>
+</div>
+<div class="flex items-center gap-3 bg-surface-container-low rounded-full px-4 py-2">
+<span class="text-sm font-bold text-on-surface w-8 text-right">40</span>
+<span class="text-xs text-on-surface-variant">%</span>
+</div>
+<div class="w-16 text-right">
+<span class="text-sm text-on-surface-variant">195g</span>
+</div>
+</div>
+<!-- Carbs Input -->
+<div class="flex items-center gap-6">
+<div class="w-3 h-3 rounded-full bg-secondary shrink-0"></div>
+<div class="flex-1">
+<label class="text-sm font-medium text-on-surface">Carbohydrates</label>
+<p class="text-xs text-on-surface-variant">Primary energy source</p>
+</div>
+<div class="flex items-center gap-3 bg-surface-container-low rounded-full px-4 py-2">
+<span class="text-sm font-bold text-on-surface w-8 text-right">30</span>
+<span class="text-xs text-on-surface-variant">%</span>
+</div>
+<div class="w-16 text-right">
+<span class="text-sm text-on-surface-variant">146g</span>
+</div>
+</div>
+<!-- Fats Input -->
+<div class="flex items-center gap-6">
+<div class="w-3 h-3 rounded-full bg-tertiary shrink-0"></div>
+<div class="flex-1">
+<label class="text-sm font-medium text-on-surface">Fats</label>
+<p class="text-xs text-on-surface-variant">Hormone regulation</p>
+</div>
+<div class="flex items-center gap-3 bg-surface-container-low rounded-full px-4 py-2">
+<span class="text-sm font-bold text-on-surface w-8 text-right">30</span>
+<span class="text-xs text-on-surface-variant">%</span>
+</div>
+<div class="w-16 text-right">
+<span class="text-sm text-on-surface-variant">65g</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe no-border tonal-depth-shift bg-[#1a1c1f] shadow-[0_-4px_40px_rgba(38,166,154,0.04)] flex justify-around items-center h-20 px-8 md:hidden">
+<button class="flex flex-col items-center justify-center text-[#282a2d] px-5 py-2 hover:text-[#66d9cc]/80 active:scale-90 transition-transform">
+<span class="material-symbols-outlined mb-1" data-icon="analytics">analytics</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-semibold">Journal</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#282a2d] px-5 py-2 hover:text-[#66d9cc]/80 active:scale-90 transition-transform">
+<span class="material-symbols-outlined mb-1" data-icon="insights">insights</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-semibold">Analytics</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#66d9cc] bg-gradient-to-br from-[#66d9cc]/10 to-[#26a69a]/5 rounded-full px-5 py-2 active:scale-90 transition-transform">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-semibold">Profile</span>
+</button>
+</nav>
+</body></html>
+
+<!-- Health Profile -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Silent Observer - Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#93000a",
+                    "inverse-primary": "#006a62",
+                    "surface-container-low": "#1a1c1f",
+                    "secondary-fixed-dim": "#ffb954",
+                    "secondary-fixed": "#ffddb4",
+                    "outline-variant": "#3d4947",
+                    "on-primary-fixed-variant": "#005049",
+                    "on-secondary-fixed-variant": "#633f00",
+                    "on-primary-container": "#003430",
+                    "surface-container-high": "#282a2d",
+                    "on-primary-fixed": "#00201d",
+                    "tertiary-fixed": "#ffdad8",
+                    "primary-fixed-dim": "#66d9cc",
+                    "surface-bright": "#37393d",
+                    "secondary": "#ffb954",
+                    "surface-container": "#1e2023",
+                    "on-secondary-container": "#3c2500",
+                    "primary": "#66d9cc",
+                    "tertiary-container": "#e57373",
+                    "outline": "#869391",
+                    "on-tertiary-fixed": "#410007",
+                    "primary-container": "#26a69a",
+                    "on-error": "#690005",
+                    "inverse-surface": "#e2e2e6",
+                    "on-surface-variant": "#bcc9c6",
+                    "background": "#111316",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary": "#452b00",
+                    "primary-fixed": "#84f5e8",
+                    "on-surface": "#e2e2e6",
+                    "surface-container-highest": "#333538",
+                    "on-tertiary": "#620f17",
+                    "surface-variant": "#333538",
+                    "surface-dim": "#111316",
+                    "error": "#ffb4ab",
+                    "surface-tint": "#66d9cc",
+                    "secondary-container": "#c3841b",
+                    "inverse-on-surface": "#2f3034",
+                    "on-secondary-fixed": "#291800",
+                    "on-tertiary-container": "#5e0c15",
+                    "on-background": "#e2e2e6",
+                    "surface": "#111316",
+                    "on-tertiary-fixed-variant": "#80272b",
+                    "on-primary": "#003732",
+                    "surface-container-lowest": "#0c0e11",
+                    "tertiary": "#ffb3b1",
+                    "tertiary-fixed-dim": "#ffb3b1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": [
+                            "Inter"
+                    ],
+                    "body": [
+                            "Inter"
+                    ],
+                    "label": [
+                            "Inter"
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111316;
+            color: #e2e2e6;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24 md:pb-0 flex flex-col">
+<!-- TopAppBar from JSON -->
+<header class="fixed top-0 w-full z-50 bg-[#1e2023]/80 backdrop-blur-2xl no-line tonal-transition bg-gradient-to-b from-[#111316] to-transparent flat-no-shadows ambient-lift flex justify-between items-center px-6 h-16">
+<div class="flex items-center space-x-3">
+<!-- leading avatar -->
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-high">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="close up portrait of a young woman with dark hair in a studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdGb5ncYS5UFReXVKjoZeH2nNYwGR6aijXJnkS7pjNA44CUKS7Ys3FyiHqfwEQtghhrhT12orCTnIHLSZr-lr2-IqolVnQeg8E-XVOwJhW_V390nilL288IBATvJghB2gJnAmDsuKZ67ctylOdXOSRZK2WFzB9IgSqhfcfYYJBzlhfGlxNDX6cWhwUzQJrJTnjzK7WrSExeY1c14dB1H7Ty03iEVoHrMMz8RBAXz7B-e1IJqw_UtH6yqapY6X-681KS2FMyJ6GkAMn"/>
+</div>
+<span class="text-lg font-bold tracking-tighter text-white font-['Inter']">The Silent Observer</span>
+</div>
+<button class="text-[#66d9cc] hover:bg-white/5 transition-colors scale-95 duration-200 ease-out p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 px-6 md:px-8 max-w-5xl mx-auto w-full space-y-12">
+<!-- Header & Date Selector -->
+<section class="flex flex-col md:flex-row md:justify-between md:items-end space-y-4 md:space-y-0">
+<div>
+<h1 class="font-headline text-[1.5rem] font-semibold tracking-tight text-on-surface">Analytics</h1>
+<p class="font-body text-on-surface-variant text-sm mt-1">Reviewing your recent performance.</p>
+</div>
+<div class="flex items-center space-x-2 bg-surface-container-low rounded-full p-1 w-max">
+<button class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface text-sm font-medium transition-colors">Weekly</button>
+<button class="px-4 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface text-sm font-medium transition-colors">Monthly</button>
+</div>
+</section>
+<!-- Main Chart Bento Area -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Main Graph Card -->
+<div class="lg:col-span-2 bg-surface-container rounded-xl p-6 relative overflow-hidden flex flex-col justify-between min-h-[320px]">
+<!-- Header -->
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="text-on-surface font-semibold text-lg">Intake vs. Goal</h2>
+<p class="text-on-surface-variant text-sm">Last 7 Days</p>
+</div>
+<div class="flex items-center space-x-4 text-xs font-medium">
+<div class="flex items-center space-x-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-on-surface-variant">Intake</span>
+</div>
+<div class="flex items-center space-x-1.5">
+<span class="w-2 h-2 rounded-full bg-surface-container-highest"></span>
+<span class="text-on-surface-variant">Goal</span>
+</div>
+</div>
+</div>
+<!-- Fake Chart Area -->
+<div class="relative w-full flex-grow flex items-end justify-between px-2 pb-6 mt-4">
+<!-- Grid Lines (Subtle) -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-10">
+<div class="w-full h-px bg-outline-variant"></div>
+<div class="w-full h-px bg-outline-variant"></div>
+<div class="w-full h-px bg-outline-variant"></div>
+<div class="w-full h-px bg-outline-variant"></div>
+</div>
+<!-- Bars -->
+<div class="w-8 md:w-12 flex flex-col items-center justify-end h-[60%] space-y-2 relative z-10">
+<div class="w-full rounded-md bg-surface-container-highest h-full relative overflow-hidden group">
+<div class="absolute bottom-0 w-full bg-primary rounded-md transition-all duration-500 h-[80%] group-hover:bg-primary-container"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold mt-2">Mon</span>
+</div>
+<div class="w-8 md:w-12 flex flex-col items-center justify-end h-[85%] space-y-2 relative z-10">
+<div class="w-full rounded-md bg-surface-container-highest h-full relative overflow-hidden group">
+<div class="absolute bottom-0 w-full bg-primary rounded-md transition-all duration-500 h-[95%] group-hover:bg-primary-container"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold mt-2">Tue</span>
+</div>
+<div class="w-8 md:w-12 flex flex-col items-center justify-end h-[70%] space-y-2 relative z-10">
+<div class="w-full rounded-md bg-surface-container-highest h-full relative overflow-hidden group">
+<div class="absolute bottom-0 w-full bg-primary rounded-md transition-all duration-500 h-[70%] group-hover:bg-primary-container"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold mt-2">Wed</span>
+</div>
+<div class="w-8 md:w-12 flex flex-col items-center justify-end h-[100%] space-y-2 relative z-10">
+<div class="w-full rounded-md bg-surface-container-highest h-full relative overflow-hidden group">
+<div class="absolute bottom-0 w-full bg-secondary-fixed-dim rounded-md transition-all duration-500 h-[110%] opacity-90"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold mt-2">Thu</span>
+</div>
+<div class="w-8 md:w-12 flex flex-col items-center justify-end h-[75%] space-y-2 relative z-10">
+<div class="w-full rounded-md bg-surface-container-highest h-full relative overflow-hidden group">
+<div class="absolute bottom-0 w-full bg-primary rounded-md transition-all duration-500 h-[85%] group-hover:bg-primary-container"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold mt-2">Fri</span>
+</div>
+<div class="w-8 md:w-12 flex flex-col items-center justify-end h-[65%] space-y-2 relative z-10">
+<div class="w-full rounded-md bg-surface-container-highest h-full relative overflow-hidden group">
+<div class="absolute bottom-0 w-full bg-primary rounded-md transition-all duration-500 h-[90%] group-hover:bg-primary-container"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold mt-2">Sat</span>
+</div>
+<div class="w-8 md:w-12 flex flex-col items-center justify-end h-[50%] space-y-2 relative z-10">
+<div class="w-full rounded-md bg-surface-container-highest h-full relative overflow-hidden group">
+<div class="absolute bottom-0 w-full bg-primary rounded-md transition-all duration-500 h-[60%] group-hover:bg-primary-container"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold mt-2 text-primary">Sun</span>
+</div>
+<!-- Fake Line Overlay -->
+<svg class="absolute inset-0 w-full h-[calc(100%-2rem)] pointer-events-none z-20" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M 5,60 Q 20,30 35,50 T 65,10 T 95,70" fill="none" stroke="rgba(255, 255, 255, 0.1)" stroke-dasharray="2,2" stroke-width="1"></path>
+</svg>
+</div>
+</div>
+<!-- Stats Column -->
+<div class="flex flex-col gap-6">
+<!-- Average Calorie Card -->
+<div class="bg-surface-container rounded-xl p-6 flex flex-col justify-between">
+<div>
+<p class="text-on-surface-variant text-xs uppercase tracking-widest font-semibold mb-1">Weekly Avg</p>
+<h3 class="text-on-surface text-[2rem] font-bold tracking-tight leading-none">2,140<span class="text-on-surface-variant text-sm font-medium ml-1">kcal</span></h3>
+</div>
+<div class="mt-4 flex items-center justify-between">
+<div class="flex items-center space-x-1 text-primary text-sm font-medium">
+<span class="material-symbols-outlined text-sm">trending_down</span>
+<span>-12% vs last week</span>
+</div>
+</div>
+</div>
+<!-- Streak Card -->
+<div class="bg-surface-container-lowest border border-outline-variant/15 rounded-xl p-6 flex items-center justify-between">
+<div>
+<p class="text-on-surface-variant text-xs uppercase tracking-widest font-semibold mb-1">Current Streak</p>
+<div class="flex items-baseline space-x-2">
+<h3 class="text-on-surface text-[2rem] font-bold tracking-tight leading-none text-secondary">14</h3>
+<span class="text-on-surface-variant text-sm font-medium">days</span>
+</div>
+</div>
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-2xl fill">local_fire_department</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Macro Breakdown -->
+<section class="bg-surface-container rounded-xl p-6">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-on-surface font-semibold text-lg">Macro Distribution</h2>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<!-- The "Macro Bar" Context-Specific Design -->
+<div class="w-full h-4 rounded-md bg-surface-container-highest overflow-hidden flex">
+<div class="h-full bg-primary" style="width: 45%;"></div> <!-- Carbs -->
+<div class="h-full bg-secondary" style="width: 35%;"></div> <!-- Protein -->
+<div class="h-full bg-tertiary" style="width: 20%;"></div> <!-- Fats -->
+</div>
+<div class="mt-6 grid grid-cols-3 gap-4">
+<div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-on-surface-variant text-xs uppercase tracking-widest font-semibold">Carbs</span>
+</div>
+<p class="text-on-surface text-lg font-bold">45%</p>
+<p class="text-on-surface-variant text-sm">240g</p>
+</div>
+<div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-on-surface-variant text-xs uppercase tracking-widest font-semibold">Protein</span>
+</div>
+<p class="text-on-surface text-lg font-bold">35%</p>
+<p class="text-on-surface-variant text-sm">186g</p>
+</div>
+<div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-on-surface-variant text-xs uppercase tracking-widest font-semibold">Fats</span>
+</div>
+<p class="text-on-surface text-lg font-bold">20%</p>
+<p class="text-on-surface-variant text-sm">47g</p>
+</div>
+</div>
+</section>
+<!-- Spacer for bottom nav -->
+<div class="h-10 md:hidden"></div>
+</main>
+<!-- BottomNavBar from JSON -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 pb-safe bg-[#1e2023]/90 backdrop-blur-2xl no-border tonal-depth-shift bg-[#1a1c1f] shadow-[0_-4px_40px_rgba(38,166,154,0.04)] flex justify-around items-center h-20 px-8">
+<!-- Journal (Inactive) -->
+<a class="flex flex-col items-center justify-center text-[#282a2d] px-5 py-2 hover:text-[#66d9cc]/80 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">analytics</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-semibold text-on-surface-variant">Journal</span>
+</a>
+<!-- Analytics (Active) -->
+<a class="flex flex-col items-center justify-center text-[#66d9cc] bg-gradient-to-br from-[#66d9cc]/10 to-[#26a69a]/5 rounded-full px-5 py-2 hover:text-[#66d9cc]/80 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1 fill">insights</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-semibold text-[#66d9cc]">Analytics</span>
+</a>
+<!-- Profile (Inactive) -->
+<a class="flex flex-col items-center justify-center text-[#282a2d] px-5 py-2 hover:text-[#66d9cc]/80 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-semibold text-on-surface-variant">Profile</span>
+</a>
+</nav>
+</body></html>
