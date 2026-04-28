@@ -2,14 +2,14 @@
 
 @theme inline {
   --font-sans: var(--font-inter);
-  --color-background: #111316;
-  --color-surface: #111316;
-  --color-surface-dim: #111316;
-  --color-surface-container-lowest: #0c0e11;
-  --color-surface-container-low: #1a1c1f;
-  --color-surface-container: #1e2023;
-  --color-surface-container-high: #282a2d;
-  --color-surface-container-highest: #333538;
+  --color-background: #000000;
+  --color-surface: #000000;
+  --color-surface-dim: #000000;
+  --color-surface-container-lowest: #000000;
+  --color-surface-container-low: #09090b;
+  --color-surface-container: #121214;
+  --color-surface-container-high: #18181b;
+  --color-surface-container-highest: #27272a;
   --color-primary: #66d9cc;
   --color-primary-strong: #26a69a;
   --color-primary-soft: #84f5e8;
@@ -38,9 +38,7 @@ body {
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at top, rgba(102, 217, 204, 0.1), transparent 30%),
-    linear-gradient(180deg, #111316 0%, #0c0e11 100%);
+  background: #000000;
   color: var(--color-on-background);
   font-family: var(--font-inter), sans-serif;
   overflow-x: hidden;
@@ -67,7 +65,7 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  background: #111316;
+  background: #000000;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -76,11 +74,11 @@ a {
 }
 
 .glass-panel {
-  background: rgba(30, 32, 35, 0.72);
+  background: rgba(18, 18, 20, 0.72);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 40px -20px rgba(102, 217, 204, 0.12);
+  box-shadow: 0 10px 40px -20px rgba(0, 0, 0, 0.5);
 }
 
 .safe-bottom {
