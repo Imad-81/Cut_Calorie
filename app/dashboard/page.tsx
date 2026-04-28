@@ -99,7 +99,9 @@ function DashboardScreen() {
         {/* Remaining stats row */}
         <div className="grid grid-cols-2 gap-3">
           <GlassCard className="rounded-[18px] px-4 py-3">
-            <div className="text-xs uppercase tracking-[0.2em] text-on-surface-variant">Remaining</div>
+            <div className="text-xs uppercase tracking-[0.2em] text-on-surface-variant">
+              {remainingCalories < 0 ? "Over Limit" : "Remaining"}
+            </div>
             <div className={cn("mt-1 text-xl font-bold", remainingCalories < 0 ? "text-[#ffb954]" : "text-white")}>
               {Math.abs(remainingCalories)}
               <span className="ml-1 text-xs font-medium text-on-surface-variant">
@@ -108,7 +110,9 @@ function DashboardScreen() {
             </div>
           </GlassCard>
           <GlassCard className="rounded-[18px] px-4 py-3">
-            <div className="text-xs uppercase tracking-[0.2em] text-on-surface-variant">Protein left</div>
+            <div className="text-xs uppercase tracking-[0.2em] text-on-surface-variant">
+              {remainingProtein < 0 ? "Protein over" : "Protein left"}
+            </div>
             <div className={cn("mt-1 text-xl font-bold", remainingProtein < 0 ? "text-[#ffb3b1]" : "text-white")}>
               {Math.abs(Math.round(remainingProtein))}
               <span className="ml-1 text-xs font-medium text-on-surface-variant">g</span>

@@ -5,9 +5,26 @@ import { parseFoodAnalysis } from "@/lib/food-analysis";
 // Use gemini-1.5-flash as the reliable default; override via env if needed
 const geminiModel = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
 
-const systemPrompt = `You are a precise nutritionist AI. Given a food description and/or image, return ONLY a valid JSON object (no markdown, no code fences) with exactly these keys:
+const systemPrompt = `You are a highly precise nutritionist AI.
+
+Given a food description and/or image, return ONLY a valid JSON object (no markdown, no code fences) with exactly these keys:
 { "foodName": string, "servingSize": string, "calories": number, "protein": number, "carbs": number, "fats": number, "fiber": number }
-All numeric values are per the described serving. Be accurate for Indian foods too.`;
+
+Rules:
+- All values must correspond to the described serving size.
+- If portion size is unclear, assume a realistic but slightly generous (higher-end) serving.
+- Always lean toward the higher side of calorie estimates to avoid underestimation.
+- Include hidden calories (oil, butter, ghee, sugar, sauces, frying, etc.), especially in Indian dishes.
+- Use real-world average nutritional data (USDA or standard Indian diet references).
+- Ensure macronutrients are internally consistent with calories (approx: protein/carbs = 4 kcal/g, fats = 9 kcal/g).
+- If multiple food items are present, combine them into a single total estimate.
+
+Output constraints:
+- Return ONLY raw JSON.
+- No explanations, no assumptions, no extra keys.
+- Values must be realistic and not rounded excessively (avoid overly neat numbers like exactly 100 unless justified).
+
+Be especially accurate with Indian foods (roti, dal, sabzi, rice, paneer, etc.), considering typical cooking methods (oil/ghee usage).`;;
 
 export async function POST(request: Request) {
   try {
