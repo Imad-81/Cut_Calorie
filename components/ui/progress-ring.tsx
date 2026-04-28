@@ -27,7 +27,7 @@ function Circle({ color, progress, radius, strokeWidth, id }: Ring) {
       <defs>
         {/* Soft shadow for the overlap tip */}
         <filter id={shadowFilterId} x="-50%" y="-50%" width="200%" height="200%">
-          <feDropShadow dx="0" dy="0" stdDeviation={strokeWidth * 0.5} floodColor="rgba(0,0,0,5)" />
+          <feDropShadow dx="0" dy="0" stdDeviation={strokeWidth * 0.5} floodColor="rgba(0,0,0,0.85)" />
         </filter>
       </defs>
 
