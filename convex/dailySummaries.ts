@@ -22,8 +22,8 @@ async function recomputeDailySummary(
       q.eq("userId", user.clerkId).eq("date", date),
     )
     .unique();
-  const previousDate = new Date(`${date}T00:00:00`);
-  previousDate.setDate(previousDate.getDate() - 1);
+  const previousDate = new Date(`${date}T00:00:00Z`);
+  previousDate.setUTCDate(previousDate.getUTCDate() - 1);
   const previousKey = previousDate.toISOString().slice(0, 10);
   const previous = await ctx.db
     .query("dailySummaries")

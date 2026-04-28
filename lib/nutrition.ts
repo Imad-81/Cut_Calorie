@@ -83,15 +83,15 @@ export function getBmiCategory(bmi?: number | null) {
 }
 
 export function formatDateLabel(date: Date, options?: Intl.DateTimeFormatOptions) {
-  return new Intl.DateTimeFormat("en-IN", options).format(date);
+  return new Intl.DateTimeFormat("en-IN", { timeZone: "Asia/Kolkata", ...options }).format(date);
 }
 
 export function todayKey() {
-  return new Date().toISOString().slice(0, 10);
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
 }
 
 export function shiftDate(dateKey: string, amount: number) {
-  const date = new Date(`${dateKey}T00:00:00`);
-  date.setDate(date.getDate() + amount);
+  const date = new Date(`${dateKey}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + amount);
   return date.toISOString().slice(0, 10);
 }

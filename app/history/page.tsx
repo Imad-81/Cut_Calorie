@@ -231,10 +231,7 @@ function FoodLogTab({ today }: { today: string }) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   function changeDay(delta: number) {
-    const parts = selectedDate.split("-").map(Number);
-    const d = new Date(parts[0], parts[1] - 1, parts[2]);
-    d.setDate(d.getDate() + delta);
-    const next = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const next = shiftDate(selectedDate, delta);
     if (next <= today) setSelectedDate(next);
   }
 
