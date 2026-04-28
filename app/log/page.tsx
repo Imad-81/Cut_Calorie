@@ -44,6 +44,7 @@ function LogScreen() {
 
   const [description, setDescription] = useState("");
   const [mealType, setMealType] = useState<(typeof mealTypes)[number]>("lunch");
+  const [selectedDate, setSelectedDate] = useState(todayKey());
   const [analysis, setAnalysis] = useState<FoodAnalysisResult | null>(null);
   const [imageBase64, setImageBase64] = useState<string | undefined>();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | undefined>();
@@ -83,7 +84,7 @@ function LogScreen() {
     setIsSaving(true);
     try {
       await addFoodLog({
-        date: todayKey(),
+        date: selectedDate,
         mealType,
         foodName: analysis.foodName,
         calories: analysis.calories,
@@ -120,8 +121,17 @@ function LogScreen() {
 
         {/* ── Step 1: Meal type ──────────────────────────────────────────── */}
         <GlassCard className="rounded-[24px] p-4 space-y-3">
-          <div className="text-xs uppercase tracking-[0.2em] text-on-surface-variant">
-            Step 1 — When did you eat this?
+          <div className="flex items-center justify-between">
+            <div className="text-xs uppercase tracking-[0.2em] text-on-surface-variant">
+              Step 1 — When did you eat this?
+            </div>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              max={todayKey()}
+              className="rounded-lg bg-surface-container-high px-2 py-1 text-xs text-white outline-none border border-white/8 focus:border-primary/40 [color-scheme:dark]"
+            />
           </div>
           <div className="grid grid-cols-4 gap-2">
             {mealTypes.map((value) => (
