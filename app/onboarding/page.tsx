@@ -71,7 +71,7 @@ function OnboardingScreen() {
     setIsSaving(true);
     try {
       await saveUser({
-        name: user.fullName ?? "Silent Observer",
+        name: user.fullName ?? "CUT",
         email: user.primaryEmailAddress?.emailAddress ?? "",
         avatarUrl: user.imageUrl,
         height: form.height,

@@ -64,7 +64,7 @@ function DashboardScreen() {
 
   return (
     <AppChrome
-      title="The Silent Observer"
+      title="CUT"
       subtitle={formatDateLabel(new Date(), {
         weekday: "long",
         month: "long",

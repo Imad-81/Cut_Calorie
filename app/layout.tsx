@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "The Silent Observer",
+  title: "CUT",
   description: "A mobile-first AI calorie tracker.",
 };
 

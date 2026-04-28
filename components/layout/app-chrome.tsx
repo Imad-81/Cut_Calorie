@@ -33,7 +33,7 @@ export function AppChrome({
           <div>
             <div className="text-sm font-semibold text-white">{title}</div>
             <div className="text-xs text-on-surface-variant">
-              {subtitle ?? user?.fullName ?? "The Silent Observer"}
+              {subtitle ?? user?.fullName ?? "CUT"}
             </div>
           </div>
         </div>
