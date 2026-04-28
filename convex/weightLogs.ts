@@ -31,6 +31,19 @@ export const getWeightLogsByUserId = query({
   },
 });
 
+export const deleteWeightLog = mutation({
+  args: { weightLogId: v.id("weightLogs") },
+  handler: async (ctx, args) => {
+    const { user } = await requireCurrentUser(ctx);
+    const log = await ctx.db.get(args.weightLogId);
+    if (!log || log.userId !== user.clerkId) {
+      throw new Error("Weight log not found");
+    }
+    await ctx.db.delete(args.weightLogId);
+    return true;
+  },
+});
+
 export const getLatestWeight = query({
   args: {},
   handler: async (ctx) => {
