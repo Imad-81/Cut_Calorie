@@ -24,7 +24,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { ChartTooltipFrame } from "@/components/ui/chart-tooltip";
 import { PageTransition } from "@/components/ui/page-transition";
 import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
+import type { Doc, Id } from "@/convex/_generated/dataModel";
 import { mealTypeLabels } from "@/lib/constants";
 import { shiftDate, todayKey } from "@/lib/nutrition";
 import { cn } from "@/lib/utils";
@@ -41,10 +41,13 @@ function HistoryScreen() {
   const [tab, setTab] = useState<"analytics" | "foodlog">("analytics");
   const [range, setRange] = useState<"weekly" | "monthly">("weekly");
   const today = todayKey();
+  const [selectedDate, setSelectedDate] = useState(today);
   const from = shiftDate(today, range === "weekly" ? -6 : -29);
+  
   const user = useQuery(api.users.getUserByClerkId, {});
   const summaries = useQuery(api.dailySummaries.getDailySummariesByRange, { from, to: today });
   const weightLogs = useQuery(api.weightLogs.getWeightLogsByUserId, {});
+  const foodLogs = useQuery(api.foodLogs.getFoodLogsByDate, { date: selectedDate });
   const resolvedWeightLogs = weightLogs ?? [];
 
   const caloriesData = useMemo(
@@ -110,10 +113,13 @@ function HistoryScreen() {
             <button
               key={value}
               type="button"
-              onClick={() => setTab(value)}
+              onPointerDown={(e) => {
+                e.preventDefault(); // Prevent focus/touch delay issues
+                setTab(value);
+              }}
               className={cn(
-                "min-h-11 flex-1 rounded-full px-4 py-2 text-sm font-medium capitalize",
-                tab === value ? "bg-surface-container-high text-white" : "text-on-surface-variant",
+                "min-h-11 flex-1 rounded-full px-4 py-2 text-sm font-medium capitalize transition-colors touch-manipulation",
+                tab === value ? "bg-surface-container-high text-white" : "text-on-surface-variant hover:text-white",
               )}
             >
               {value === "analytics" ? "Analytics" : "Food Log"}
@@ -129,10 +135,13 @@ function HistoryScreen() {
                 <button
                   key={value}
                   type="button"
-                  onClick={() => setRange(value)}
+                  onPointerDown={(e) => {
+                    e.preventDefault();
+                    setRange(value);
+                  }}
                   className={cn(
-                    "min-h-11 flex-1 rounded-full px-4 py-2 text-sm font-medium capitalize",
-                    range === value ? "bg-surface-container-high text-white" : "text-on-surface-variant",
+                    "min-h-11 flex-1 rounded-full px-4 py-2 text-sm font-medium capitalize transition-colors touch-manipulation",
+                    range === value ? "bg-surface-container-high text-white" : "text-on-surface-variant hover:text-white",
                   )}
                 >
                   {value}
@@ -241,16 +250,29 @@ function HistoryScreen() {
             </div>
           </>
         ) : (
-          <FoodLogTab today={today} />
+          <FoodLogTab 
+            today={today} 
+            selectedDate={selectedDate} 
+            setSelectedDate={setSelectedDate} 
+            foodLogs={foodLogs} 
+          />
         )}
       </PageTransition>
     </AppChrome>
   );
 }
 
-function FoodLogTab({ today }: { today: string }) {
-  const [selectedDate, setSelectedDate] = useState(today);
-  const foodLogs = useQuery(api.foodLogs.getFoodLogsByDate, { date: selectedDate });
+function FoodLogTab({ 
+  today, 
+  selectedDate, 
+  setSelectedDate, 
+  foodLogs 
+}: { 
+  today: string;
+  selectedDate: string;
+  setSelectedDate: (date: string) => void;
+  foodLogs: Doc<"foodLogs">[] | undefined;
+}) {
   const deleteFoodLog = useMutation(api.foodLogs.deleteFoodLog);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -296,8 +318,11 @@ function FoodLogTab({ today }: { today: string }) {
       <GlassCard className="flex items-center justify-between rounded-[18px] px-4 py-3">
         <button
           type="button"
-          onClick={() => changeDay(-1)}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/8 text-white transition-colors hover:bg-white/12"
+          onPointerDown={(e) => {
+            e.preventDefault();
+            changeDay(-1);
+          }}
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/8 text-white transition-colors hover:bg-white/12 touch-manipulation"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -307,9 +332,12 @@ function FoodLogTab({ today }: { today: string }) {
         </div>
         <button
           type="button"
-          onClick={() => changeDay(1)}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            changeDay(1);
+          }}
           disabled={selectedDate >= today}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/8 text-white transition-colors hover:bg-white/12 disabled:opacity-30"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/8 text-white transition-colors hover:bg-white/12 disabled:opacity-30 touch-manipulation"
         >
           <ChevronRight className="h-4 w-4" />
         </button>
