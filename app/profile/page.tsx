@@ -74,7 +74,34 @@ function ProfileScreen() {
   const bmi = useMemo(() => calculateBmi(latestWeight?.weight, user?.height), [latestWeight?.weight, user?.height]);
   const bmiPercent = bmi ? Math.max(0, Math.min(100, ((bmi - 15) / 20) * 100)) : 0;
 
-  if (!user || !clerkUser) return null;
+  // Prevent render blocking by showing a skeleton while user data is fetching
+  if (user === undefined || !clerkUser) {
+    return (
+      <AppChrome title="Health Profile" subtitle="Loading...">
+        <PageTransition className="space-y-4">
+          <GlassCard className="rounded-[24px] p-5 animate-pulse">
+            <div className="flex items-center gap-4">
+              <div className="h-16 w-16 rounded-full bg-white/10" />
+              <div className="space-y-2">
+                <div className="h-6 w-32 rounded bg-white/10" />
+                <div className="h-4 w-40 rounded bg-white/5" />
+              </div>
+            </div>
+          </GlassCard>
+          <GlassCard className="rounded-[24px] p-5 animate-pulse h-48">
+             <div className="h-6 w-32 rounded bg-white/10 mb-4" />
+             <div className="grid grid-cols-2 gap-3">
+               <div className="h-16 rounded-[18px] bg-white/5" />
+               <div className="h-16 rounded-[18px] bg-white/5" />
+               <div className="h-16 rounded-[18px] bg-white/5" />
+               <div className="h-16 rounded-[18px] bg-white/5" />
+             </div>
+          </GlassCard>
+        </PageTransition>
+      </AppChrome>
+    );
+  }
+  if (!user) return null;
   const currentUser = user;
   const currentClerkUser = clerkUser;
 

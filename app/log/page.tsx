@@ -14,6 +14,8 @@ import type { FoodAnalysisResult } from "@/lib/food-analysis";
 import { todayKey } from "@/lib/nutrition";
 import { cn } from "@/lib/utils";
 
+import { PageTransition } from "@/components/ui/page-transition";
+
 const MEAL_ICONS: Record<(typeof mealTypes)[number], string> = {
   breakfast: "☀️",
   lunch: "🌤️",
@@ -124,7 +126,7 @@ function LogScreen() {
 
   return (
     <AppChrome title="Log Food" subtitle="Describe it, snap it, or both">
-      <div className="space-y-4 pb-6">
+      <PageTransition className="space-y-4 pb-6">
 
         {/* ── Step 1: Meal type ──────────────────────────────────────────── */}
         <GlassCard className="rounded-[24px] p-4 space-y-3">
@@ -354,7 +356,7 @@ function LogScreen() {
             </button>
           </GlassCard>
         )}
-      </div>
+      </PageTransition>
     </AppChrome>
   );
 }

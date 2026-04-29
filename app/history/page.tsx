@@ -83,6 +83,22 @@ function HistoryScreen() {
     resolvedWeightLogs.slice(-3)[0].weight > resolvedWeightLogs.slice(-3)[1].weight &&
     resolvedWeightLogs.slice(-3)[1].weight > resolvedWeightLogs.slice(-3)[2].weight;
 
+  // Replaced full-page return null with skeleton UI to ensure instant transitions
+  if (user === undefined) {
+    return (
+      <AppChrome title="Analytics" subtitle="Loading...">
+        <PageTransition className="space-y-4">
+          <div className="flex rounded-full bg-surface-container-low p-1 animate-pulse">
+            <div className="h-11 w-full rounded-full bg-white/5" />
+          </div>
+          <GlassCard className="rounded-[24px] p-4 animate-pulse h-64">
+            <div className="h-6 w-32 rounded bg-white/10 mb-2" />
+            <div className="h-4 w-24 rounded bg-white/5" />
+          </GlassCard>
+        </PageTransition>
+      </AppChrome>
+    );
+  }
   if (!user) return null;
 
   return (
@@ -135,20 +151,25 @@ function HistoryScreen() {
                 </div>
               </div>
               <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={caloriesData}>
-                    <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
-                    <XAxis dataKey="date" tick={{ fill: "#bcc9c6", fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: "#bcc9c6", fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <Tooltip content={<CaloriesTooltip />} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
-                    <ReferenceLine y={user.dailyCalorieTarget} stroke="#869391" strokeDasharray="4 4" />
-                    <Bar dataKey="calories" radius={[8, 8, 0, 0]}>
-                      {caloriesData.map((entry) => (
-                        <Cell key={entry.date} fill={entry.over ? "#ffb954" : "#66d9cc"} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+                {/* Added fallback skeletons for charts so UI doesn't break while fetching */}
+                {summaries === undefined ? (
+                  <div className="h-full w-full animate-pulse rounded-xl bg-white/5" />
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={caloriesData}>
+                      <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
+                      <XAxis dataKey="date" tick={{ fill: "#bcc9c6", fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fill: "#bcc9c6", fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <Tooltip content={<CaloriesTooltip />} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
+                      <ReferenceLine y={user.dailyCalorieTarget} stroke="#869391" strokeDasharray="4 4" />
+                      <Bar dataKey="calories" radius={[8, 8, 0, 0]}>
+                        {caloriesData.map((entry) => (
+                          <Cell key={entry.date} fill={entry.over ? "#ffb954" : "#66d9cc"} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
               </div>
             </GlassCard>
 
@@ -160,20 +181,24 @@ function HistoryScreen() {
                 ) : null}
               </div>
               <div className="h-56">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={resolvedWeightLogs.map((log) => ({
-                      date: new Date(log.loggedAt).toLocaleDateString("en-IN", { month: "short", day: "numeric" }),
-                      weight: log.weight,
-                    }))}
-                  >
-                    <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
-                    <XAxis dataKey="date" tick={{ fill: "#bcc9c6", fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: "#bcc9c6", fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <Tooltip content={<WeightTooltip />} />
-                    <Line type="monotone" dataKey="weight" stroke="#66d9cc" strokeWidth={3} dot={{ r: 4, fill: "#66d9cc" }} />
-                  </LineChart>
-                </ResponsiveContainer>
+                {weightLogs === undefined ? (
+                  <div className="h-full w-full animate-pulse rounded-xl bg-white/5" />
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                      data={resolvedWeightLogs.map((log) => ({
+                        date: new Date(log.loggedAt).toLocaleDateString("en-IN", { month: "short", day: "numeric" }),
+                        weight: log.weight,
+                      }))}
+                    >
+                      <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
+                      <XAxis dataKey="date" tick={{ fill: "#bcc9c6", fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fill: "#bcc9c6", fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <Tooltip content={<WeightTooltip />} />
+                      <Line type="monotone" dataKey="weight" stroke="#66d9cc" strokeWidth={3} dot={{ r: 4, fill: "#66d9cc" }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
               </div>
             </GlassCard>
 

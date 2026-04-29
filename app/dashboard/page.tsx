@@ -60,6 +60,25 @@ function DashboardScreen() {
   const remainingCalories = user ? (user.dailyCalorieTarget - (summary?.totalCalories ?? 0)) : 0;
   const remainingProtein = user ? (user.proteinTarget - (summary?.totalProtein ?? 0)) : 0;
 
+  // Added progressive skeleton loading to prevent navigation blank screens
+  if (user === undefined) {
+    return (
+      <AppChrome title="CUT" subtitle="Loading...">
+        <PageTransition className="space-y-4">
+          <GlassCard className="flex flex-col items-center gap-4 px-4 py-6 animate-pulse">
+            <div className="h-6 w-32 rounded bg-white/10" />
+            <div className="h-4 w-24 rounded bg-white/10 mt-1" />
+            <div className="h-48 w-48 rounded-full bg-white/10" />
+            <div className="grid w-full grid-cols-3 gap-3 mt-4">
+              <div className="h-20 rounded-[18px] bg-white/5" />
+              <div className="h-20 rounded-[18px] bg-white/5" />
+              <div className="h-20 rounded-[18px] bg-white/5" />
+            </div>
+          </GlassCard>
+        </PageTransition>
+      </AppChrome>
+    );
+  }
   if (!user) return null;
 
   return (
@@ -128,10 +147,7 @@ function DashboardScreen() {
               {summary?.streak ?? 0} days
             </div>
           </div>
-          <Link
-            href="/log"
-            className="flex min-h-11 items-center gap-2 rounded-full bg-[linear-gradient(135deg,#66d9cc,#26a69a)] px-4 py-3 text-sm font-semibold text-[#003430]"
-          >
+          <Link href="/log" prefetch={true} className="flex min-h-11 items-center gap-2 rounded-full bg-[linear-gradient(135deg,#66d9cc,#26a69a)] px-4 py-3 text-sm font-semibold text-[#003430]">
             <Camera className="h-4 w-4" />
             Log food
           </Link>
@@ -140,7 +156,7 @@ function DashboardScreen() {
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="text-lg font-semibold text-white">Today&apos;s Log</div>
-            <Link href="/history" className="flex items-center gap-1 text-xs text-on-surface-variant">
+            <Link href="/history" prefetch={true} className="flex items-center gap-1 text-xs text-on-surface-variant">
               History <ChevronRight className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -152,7 +168,12 @@ function DashboardScreen() {
                   {items.reduce((total, item) => total + item.calories, 0)} kcal
                 </div>
               </div>
-              {items.length ? (
+              {/* Added loading state for food logs to decouple UI rendering from data fetching */}
+              {foodLogs === undefined ? (
+                <div className="animate-pulse space-y-3">
+                  <div className="h-16 rounded-2xl bg-white/5" />
+                </div>
+              ) : items.length ? (
                 items.map((item) => (
                   <div
                     key={item._id}
