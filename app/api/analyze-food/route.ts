@@ -1,9 +1,9 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+// import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import { parseFoodAnalysis } from "@/lib/food-analysis";
 
 // Use gemini-1.5-flash as the reliable default; override via env if needed
-const geminiModel = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
+// const geminiModel = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
 
 const systemPrompt = `You are a highly precise nutritionist AI.
 
@@ -24,7 +24,7 @@ Output constraints:
 - No explanations, no assumptions, no extra keys.
 - Values must be realistic and not rounded excessively (avoid overly neat numbers like exactly 100 unless justified).
 
-Be especially accurate with Indian foods (roti, dal, sabzi, rice, paneer, etc.), considering typical cooking methods (oil/ghee usage).`;;
+Be especially accurate with Indian foods (roti, dal, sabzi, rice, paneer, etc.), considering typical cooking methods (oil/ghee usage).`;
 
 export async function POST(request: Request) {
   try {
@@ -38,6 +38,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing food input" }, { status: 400 });
     }
 
+    /*
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return NextResponse.json({ error: "Missing Gemini API key" }, { status: 500 });
@@ -64,6 +65,58 @@ export async function POST(request: Request) {
 
     const result = await model.generateContent(parts);
     const text = result.response.text();
+    */
+
+    const groqApiKey = process.env.GROQ_API_KEY;
+    if (!groqApiKey) {
+      return NextResponse.json({ error: "Missing Groq API key" }, { status: 500 });
+    }
+
+    // Default to Llama 3 models
+    const groqModel = process.env.GROQ_MODEL ?? (imageBase64 ? "meta-llama/llama-4-scout-17b-16e-instruct" : "llama-3.3-70b-versatile");
+
+    const messages = [
+      { role: "system", content: systemPrompt },
+    ];
+
+    if (imageBase64 && mimeType) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const content: any[] = [];
+      if (description?.trim()) {
+        content.push({ type: "text", text: `User also says: ${description.trim()}` });
+      } else {
+        content.push({ type: "text", text: "Analyze this food image." });
+      }
+      content.push({
+        type: "image_url",
+        image_url: {
+          url: `data:${mimeType};base64,${imageBase64}`
+        }
+      });
+      messages.push({ role: "user", content });
+    } else {
+      messages.push({ role: "user", content: `Food: ${description}` });
+    }
+
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${groqApiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: groqModel,
+        messages,
+        temperature: 0.1
+      })
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error?.message || "Groq API error");
+    }
+
+    const text = data.choices[0].message.content;
 
     return NextResponse.json(parseFoodAnalysis(text));
   } catch (error) {
