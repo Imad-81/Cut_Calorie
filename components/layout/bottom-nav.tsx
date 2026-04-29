@@ -24,7 +24,7 @@ export function BottomNav() {
             href={href}
             prefetch={true}
             className={cn(
-              "flex min-h-11 min-w-11 flex-col items-center justify-center rounded-2xl px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] transition",
+              "flex min-h-11 min-w-11 flex-col items-center justify-center rounded-2xl px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] transition touch-manipulation",
               active ? "bg-white/5 text-primary" : "text-on-surface-variant hover:text-white hover:bg-white/5",
             )}
           >
