@@ -54,8 +54,15 @@ function LogScreen() {
 
   // Can analyse if there is at least a description OR a photo
   const canAnalyze = useMemo(
-    () => description.trim().length > 0 || Boolean(imageBase64),
-    [description, imageBase64],
+    () => {
+      const hasText = description.trim().length > 0;
+      const hasImage = Boolean(imageBase64);
+      const isImageLoading = Boolean(imagePreviewUrl && !imageBase64);
+      
+      if (isImageLoading) return false;
+      return hasText || hasImage;
+    },
+    [description, imageBase64, imagePreviewUrl],
   );
 
   async function analyzeFood() {
@@ -238,12 +245,26 @@ function LogScreen() {
           {/* Analyse button */}
           <button
             type="button"
-            onClick={analyzeFood}
+            onPointerDown={(e) => {
+              if (!canAnalyze || isAnalyzing) return;
+              // Prevent losing focus immediately so mobile keyboards don't collapse and shift the layout
+              e.preventDefault();
+            }}
+            onClick={() => {
+              if (!canAnalyze || isAnalyzing) return;
+              // Manually blur to close keyboard cleanly without breaking the click event
+              if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+              }
+              analyzeFood();
+            }}
             disabled={!canAnalyze || isAnalyzing}
-            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#66d9cc,#26a69a)] px-5 py-3 text-sm font-semibold text-[#003430] disabled:opacity-40 transition-opacity"
+            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#66d9cc,#26a69a)] px-5 py-3 text-sm font-semibold text-[#003430] disabled:opacity-40 transition-all relative overflow-hidden"
           >
-            {isAnalyzing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-            {isAnalyzing ? "Analysing with Gemini…" : "Analyse with Gemini"}
+            {isAnalyzing ? <LoaderCircle className="h-4 w-4 animate-spin shrink-0" /> : <Sparkles className="h-4 w-4 shrink-0" />}
+            <span className="truncate">
+              {isAnalyzing ? "Analysing with Gemini…" : "Analyse with Gemini"}
+            </span>
           </button>
         </GlassCard>
 
