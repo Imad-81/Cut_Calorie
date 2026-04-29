@@ -21,6 +21,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "CUT",
   description: "A mobile-first AI calorie tracker.",
+  applicationName: "CUT",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

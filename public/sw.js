@@ -2,8 +2,7 @@ const CACHE_NAME = "cut-pwa-cache-v1";
 const CORE_ASSETS = [
   "/",
   "/manifest.json",
-  "/icon-192x192.png",
-  "/icon-512x512.png",
+  "/C.png"
 ];
 
 self.addEventListener("install", (event) => {
