@@ -75,7 +75,8 @@ export async function POST(request: Request) {
     // Default to Llama 3 models
     const groqModel = process.env.GROQ_MODEL ?? (imageBase64 ? "meta-llama/llama-4-scout-17b-16e-instruct" : "llama-3.3-70b-versatile");
 
-    const messages = [
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const messages: any[] = [
       { role: "system", content: systemPrompt },
     ];
 
