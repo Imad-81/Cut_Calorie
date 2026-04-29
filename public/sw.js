@@ -30,26 +30,38 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  // Only cache GET requests
+  // Only handle GET requests
   if (event.request.method !== "GET") return;
   
-  // Skip cross-origin requests, like Next.js API calls or Clerk auth if they are external
+  // Skip cross-origin requests
   if (!event.request.url.startsWith(self.location.origin)) return;
 
+  const url = new URL(event.request.url);
+
+  // Network First for API routes and Navigation (HTML)
+  if (url.pathname.startsWith('/api/') || event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch((err) => {
+        console.error("Network First fetch failed:", err);
+        return caches.match(event.request).then((cached) => {
+          if (cached) return cached;
+          return new Response("Offline or Network Error", { status: 503, headers: { "Content-Type": "text/plain" } });
+        });
+      })
+    );
+    return;
+  }
+
+  // Cache First with Network Fallback for static assets and other resources
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      // Return cached response if found
       if (cachedResponse) {
         return cachedResponse;
       }
       
-      // Fallback to network
-      return fetch(event.request).then((networkResponse) => {
-        // Optionally cache new responses here
-        return networkResponse;
-      }).catch(() => {
-        // Offline fallback logic could go here
-        // E.g., return caches.match('/offline.html')
+      return fetch(event.request).catch((err) => {
+        console.error("Cache First fetch failed:", err);
+        return new Response("Offline or Network Error", { status: 503, headers: { "Content-Type": "text/plain" } });
       });
     })
   );

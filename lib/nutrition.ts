@@ -83,15 +83,56 @@ export function getBmiCategory(bmi?: number | null) {
 }
 
 export function formatDateLabel(date: Date, options?: Intl.DateTimeFormatOptions) {
-  return new Intl.DateTimeFormat("en-IN", { timeZone: "Asia/Kolkata", ...options }).format(date);
+  try {
+    return new Intl.DateTimeFormat("en-IN", { timeZone: "Asia/Kolkata", ...options }).format(date);
+  } catch (e) {
+    // Fallback if timezone or options are unsupported
+    return date.toLocaleDateString(undefined, options);
+  }
 }
 
 export function todayKey() {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
+  try {
+    const d = new Date();
+    const str = d.toLocaleString("en-US", { timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit" });
+    // str is typically "MM/DD/YYYY"
+    const parts = str.split("/");
+    if (parts.length === 3) {
+      const [month, day, year] = parts;
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+    // Fallback if formatting was weird
+    return d.toISOString().slice(0, 10);
+  } catch (e) {
+    // Fallback to local date if timezone is unsupported
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 }
 
 export function shiftDate(dateKey: string, amount: number) {
-  const date = new Date(`${dateKey}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() + amount);
-  return date.toISOString().slice(0, 10);
+  try {
+    const parts = dateKey.split(/[-/]/); // handle both '-' and '/'
+    if (parts.length === 3) {
+      // Assuming YYYY-MM-DD or similar if first part is 4 digits
+      let year = Number(parts[0]);
+      let month = Number(parts[1]);
+      let day = Number(parts[2]);
+      if (year < 1000) {
+        // Might be MM/DD/YYYY fallback
+        year = Number(parts[2]);
+        month = Number(parts[0]);
+        day = Number(parts[1]);
+      }
+      const date = new Date(Date.UTC(year, month - 1, day));
+      date.setUTCDate(date.getUTCDate() + amount);
+      return date.toISOString().slice(0, 10);
+    }
+    return dateKey;
+  } catch (e) {
+    return dateKey;
+  }
 }
