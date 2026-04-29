@@ -28,7 +28,8 @@ export const metadata: Metadata = {
     title: "CUT",
   },
   icons: {
-    apple: "/icon-192x192.png",
+    icon: "/C.png",
+    apple: "/C.png",
   },
 };
 
