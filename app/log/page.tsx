@@ -263,7 +263,7 @@ function LogScreen() {
           >
             {isAnalyzing ? <LoaderCircle className="h-4 w-4 animate-spin shrink-0" /> : <Sparkles className="h-4 w-4 shrink-0" />}
             <span className="truncate">
-              {isAnalyzing ? "Analysing with Gemini…" : "Analyse with Gemini"}
+              {isAnalyzing ? "Analysing with AI…" : "Analyse with AI"}
             </span>
           </button>
         </GlassCard>
