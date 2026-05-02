@@ -1,6 +1,7 @@
 "use node";
 
 import { Jimp } from "jimp";
+import convert from "heic-convert";
 
 /**
  * Result of the image processing.
@@ -15,17 +16,8 @@ export type ProcessedImage = {
 };
 
 /**
- * Preprocesses an image to ensure compatibility with APIs like Groq using Jimp (Pure JS).
- * 
- * Requirements handled:
- * 1. Accept image input (Buffer or Base64).
- * 2. Validate (not corrupted, supported formats).
- * 3. Normalize (convert to RGB, remove alpha).
- * 4. Resize (max 1024 width/height).
- * 5. Compress (85% quality JPEG).
- * 6. Standard format (JPEG).
- * 7. Size limit (< 5MB).
- * 8. Safe error handling.
+ * Preprocesses an image to ensure compatibility with APIs like Groq.
+ * Now handles JPEG, PNG, and HEIC (iPhone) formats.
  * 
  * @param input - Buffer or Base64 string of the image.
  * @param options - Configuration for resizing, quality, and debugging.
@@ -70,28 +62,36 @@ export async function processImage(
       console.log(`[ImageProcessor] Input size: ${(imageBuffer.length / 1024).toFixed(2)} KB`);
     }
 
-    // 2. Load and Validate
-    // Jimp.read accepts Buffer
+    // 2. Handle HEIC (iPhone) format conversion
+    // Check if it's HEIC (starts with 'ftypheic' or similar, but simpler to check via a small check)
+    const isHeic = imageBuffer.slice(4, 12).toString('ascii').includes('ftyp');
+    // More specifically, HEIC usually has 'heic' or 'mif1' in the ftyp block
+    const ftyp = imageBuffer.slice(8, 12).toString('ascii');
+    
+    if (ftyp === 'heic' || ftyp === 'mif1' || ftyp === 'hevc') {
+      if (debug) console.log("[ImageProcessor] Detected HEIC format. Converting to JPEG...");
+      imageBuffer = Buffer.from(await convert({
+        buffer: imageBuffer.buffer.slice(imageBuffer.byteOffset, imageBuffer.byteOffset + imageBuffer.byteLength) as ArrayBuffer,
+        format: 'JPEG',
+        quality: 90
+      }));
+    }
+
+    // 3. Load and Validate
     const image = await Jimp.read(imageBuffer).catch((e) => {
-      throw new Error(`Invalid or corrupted image: ${e.message}`);
+      throw new Error(`Invalid or unsupported image format: ${e.message}`);
     });
 
     if (debug) {
       console.log(`[ImageProcessor] Source: ${image.width}x${image.height}`);
     }
 
-    // 3. Normalize & 4. Resize & 5. Compress
-    // - .composite(): we can use it to flatten if needed, but jimp handles transparency well in JPEG export
-    // - .scaleToFit(): scales down if exceeds limits
-    // - .getBuffer(): converts to optimized JPEG
-    
+    // 4. Normalize & Resize
     if (image.width > maxWidth || image.height > maxHeight) {
       image.scaleToFit({ w: maxWidth, h: maxHeight });
     }
 
-    // Flatten: Jimp handles this automatically when exporting to JPEG (blends with background)
-    // But we can explicitly set background if we want
-    
+    // 5. Compress
     let finalBuffer = await image.getBuffer("image/jpeg", { quality });
 
     // 6. Enforce Size Limit

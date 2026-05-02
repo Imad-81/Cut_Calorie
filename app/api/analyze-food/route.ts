@@ -1,9 +1,6 @@
-// import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import { parseFoodAnalysis } from "@/lib/food-analysis";
-
-// Use gemini-1.5-flash as the reliable default; override via env if needed
-// const geminiModel = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
+import { processImage } from "@/convex/imageProcessing";
 
 const systemPrompt = `You are a highly precise nutritionist AI.
 
@@ -38,49 +35,37 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing food input" }, { status: 400 });
     }
 
-    /*
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: "Missing Gemini API key" }, { status: 500 });
-    }
-
-    const client = new GoogleGenerativeAI(apiKey);
-    const model = client.getGenerativeModel({ model: geminiModel });
-
-    // Build parts array — support description-only, image-only, or both together
-    type Part = { text: string } | { inlineData: { data: string; mimeType: string } };
-    const parts: Part[] = [];
-
-    if (imageBase64 && mimeType) {
-      // Multimodal: system instruction as first text part, then image, then optional description
-      parts.push({ text: systemPrompt });
-      parts.push({ inlineData: { data: imageBase64, mimeType } });
-      if (description?.trim()) {
-        parts.push({ text: `User also says: ${description.trim()}` });
-      }
-    } else {
-      // Text-only
-      parts.push({ text: `${systemPrompt}\n\nFood: ${description}` });
-    }
-
-    const result = await model.generateContent(parts);
-    const text = result.response.text();
-    */
-
     const groqApiKey = process.env.GROQ_API_KEY;
     if (!groqApiKey) {
       return NextResponse.json({ error: "Missing Groq API key" }, { status: 500 });
     }
 
-    // Default to Llama 3 models
-    const groqModel = process.env.GROQ_MODEL ?? (imageBase64 ? "meta-llama/llama-4-scout-17b-16e-instruct" : "llama-3.3-70b-versatile");
+    let processedImage = null;
+    if (imageBase64) {
+      try {
+        console.log("[analyze-food] Preprocessing image...");
+        processedImage = await processImage(imageBase64, {
+          maxWidth: 1024,
+          maxHeight: 1024,
+          quality: 80,
+          debug: true
+        });
+        console.log("[analyze-food] Image preprocessed successfully");
+      } catch (err) {
+        console.error("[analyze-food] Image preprocessing failed:", err);
+        // Fallback to original image if preprocessing fails, though it might still fail at the API level
+      }
+    }
+
+    // Use correct Groq vision model names
+    const groqModel = process.env.GROQ_MODEL ?? (processedImage || imageBase64 ? "llama-3.2-11b-vision-preview" : "llama-3.3-70b-versatile");
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const messages: any[] = [
       { role: "system", content: systemPrompt },
     ];
 
-    if (imageBase64 && mimeType) {
+    if (processedImage || imageBase64) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const content: any[] = [];
       if (description?.trim()) {
@@ -88,10 +73,11 @@ export async function POST(request: Request) {
       } else {
         content.push({ type: "text", text: "Analyze this food image." });
       }
+      
       content.push({
         type: "image_url",
         image_url: {
-          url: `data:${mimeType};base64,${imageBase64}`
+          url: `data:${processedImage?.mimeType || mimeType || 'image/jpeg'};base64,${processedImage?.base64 || imageBase64}`
         }
       });
       messages.push({ role: "user", content });
@@ -108,7 +94,8 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         model: groqModel,
         messages,
-        temperature: 0.1
+        temperature: 0.1,
+        response_format: { type: "json_object" }
       })
     });
 
@@ -121,8 +108,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json(parseFoodAnalysis(text));
   } catch (error) {
-    // Log the real error so it's visible in the server console
     console.error("[analyze-food] error:", error instanceof Error ? error.message : error);
-    return NextResponse.json({ error: "Unable to analyze food" }, { status: 502 });
+    return NextResponse.json({ 
+      error: "Unable to analyze food",
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 502 });
   }
 }
