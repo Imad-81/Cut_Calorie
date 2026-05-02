@@ -8,8 +8,12 @@
  * @module
  */
 
+import type * as analyzeFoodAction from "../analyzeFoodAction.js";
+import type * as clerk from "../clerk.js";
 import type * as dailySummaries from "../dailySummaries.js";
 import type * as foodLogs from "../foodLogs.js";
+import type * as http from "../http.js";
+import type * as imageProcessing from "../imageProcessing.js";
 import type * as lib from "../lib.js";
 import type * as users from "../users.js";
 import type * as weightLogs from "../weightLogs.js";
@@ -21,8 +25,12 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  analyzeFoodAction: typeof analyzeFoodAction;
+  clerk: typeof clerk;
   dailySummaries: typeof dailySummaries;
   foodLogs: typeof foodLogs;
+  http: typeof http;
+  imageProcessing: typeof imageProcessing;
   lib: typeof lib;
   users: typeof users;
   weightLogs: typeof weightLogs;

@@ -1,6 +1,6 @@
 "use node";
 
-import sharp from "sharp";
+import { Jimp } from "jimp";
 
 /**
  * Result of the image processing.
@@ -15,7 +15,7 @@ export type ProcessedImage = {
 };
 
 /**
- * Preprocesses an image to ensure compatibility with APIs like Groq.
+ * Preprocesses an image to ensure compatibility with APIs like Groq using Jimp (Pure JS).
  * 
  * Requirements handled:
  * 1. Accept image input (Buffer or Base64).
@@ -71,76 +71,58 @@ export async function processImage(
     }
 
     // 2. Load and Validate
-    const pipeline = sharp(imageBuffer);
-    const metadata = await pipeline.metadata().catch((e) => {
+    // Jimp.read accepts Buffer
+    const image = await Jimp.read(imageBuffer).catch((e) => {
       throw new Error(`Invalid or corrupted image: ${e.message}`);
     });
 
-    if (!metadata.format) {
-      throw new Error("Unknown image format");
-    }
-
     if (debug) {
-      console.log(`[ImageProcessor] Format: ${metadata.format}, Source: ${metadata.width}x${metadata.height}`);
+      console.log(`[ImageProcessor] Source: ${image.width}x${image.height}`);
     }
 
     // 3. Normalize & 4. Resize & 5. Compress
-    // - .flatten(): removes alpha channel, blends with white background
-    // - .resize(): scales down if exceeds limits
-    // - .jpeg(): converts to optimized JPEG
-    const processed = await pipeline
-      .flatten({ background: { r: 255, g: 255, b: 255 } })
-      .resize({
-        width: maxWidth,
-        height: maxHeight,
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      .jpeg({
-        quality,
-        progressive: true,
-        mozjpeg: true, // Optimized compression
-      })
-      .toBuffer({ resolveWithObject: true });
+    // - .composite(): we can use it to flatten if needed, but jimp handles transparency well in JPEG export
+    // - .scaleToFit(): scales down if exceeds limits
+    // - .getBuffer(): converts to optimized JPEG
+    
+    if (image.width > maxWidth || image.height > maxHeight) {
+      image.scaleToFit({ w: maxWidth, h: maxHeight });
+    }
 
-    let finalData = processed.data;
-    let finalInfo = processed.info;
+    // Flatten: Jimp handles this automatically when exporting to JPEG (blends with background)
+    // But we can explicitly set background if we want
+    
+    let finalBuffer = await image.getBuffer("image/jpeg", { quality });
 
     // 6. Enforce Size Limit
-    if (finalData.length > maxSizeBytes) {
-      if (debug) console.log(`[ImageProcessor] Result ${(finalData.length / 1024 / 1024).toFixed(2)} MB still exceeds limit. Applying aggressive compression...`);
+    if (finalBuffer.length > maxSizeBytes) {
+      if (debug) console.log(`[ImageProcessor] Result ${(finalBuffer.length / 1024 / 1024).toFixed(2)} MB still exceeds limit. Applying aggressive compression...`);
       
-      const aggressive = await sharp(finalData)
-        .jpeg({ quality: 60 })
-        .toBuffer({ resolveWithObject: true });
-        
-      finalData = aggressive.data;
-      finalInfo = aggressive.info;
+      finalBuffer = await image.getBuffer("image/jpeg", { quality: 60 });
 
-      if (finalData.length > maxSizeBytes) {
-        throw new Error(`Image remains too large (${(finalData.length / 1024 / 1024).toFixed(2)} MB) even after aggressive compression.`);
+      if (finalBuffer.length > maxSizeBytes) {
+        throw new Error(`Image remains too large (${(finalBuffer.length / 1024 / 1024).toFixed(2)} MB) even after aggressive compression.`);
       }
     }
 
-    const base64 = finalData.toString("base64");
+    const base64 = finalBuffer.toString("base64");
 
     if (debug) {
-      console.log(`[ImageProcessor] Processed successfully: ${finalInfo.width}x${finalInfo.height}, Final size: ${(finalData.length / 1024).toFixed(2)} KB`);
+      console.log(`[ImageProcessor] Processed successfully: ${image.width}x${image.height}, Final size: ${(finalBuffer.length / 1024).toFixed(2)} KB`);
     }
 
     return {
-      buffer: finalData,
+      buffer: finalBuffer,
       mimeType: "image/jpeg",
-      width: finalInfo.width,
-      height: finalInfo.height,
-      size: finalData.length,
+      width: image.width,
+      height: image.height,
+      size: finalBuffer.length,
       base64,
     };
 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`[ImageProcessor] Failure: ${errorMessage}`);
-    // 8. Safe error return: throwing here allows the Convex action to catch and handle gracefully
     throw new Error(errorMessage);
   }
 }
