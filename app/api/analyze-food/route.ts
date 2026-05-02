@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     }
 
     // Use correct Groq vision model names
-    const groqModel = process.env.GROQ_MODEL ?? (processedImage || imageBase64 ? "llama-3.2-11b-vision-preview" : "llama-3.3-70b-versatile");
+    const groqModel = process.env.GROQ_MODEL ?? (processedImage || imageBase64 ? "meta-llama/llama-4-scout-17b-16e-instruct" : "llama-3.3-70b-versatile");
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const messages: any[] = [
