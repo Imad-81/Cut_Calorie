@@ -25,12 +25,14 @@ export function AuthGuard({
     isSignedIn && isConvexAuthenticated ? {} : "skip",
   );
 
+  // 1. Immediate redirect on sign out to avoid "stuck" loading screen
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      router.replace("/sign-in");
+      window.location.assign("/sign-in");
     }
-  }, [isLoaded, isSignedIn, router]);
+  }, [isLoaded, isSignedIn]);
 
+  // 2. Fallback timeout for Convex auth issues
   useEffect(() => {
     if (
       !isLoaded ||
@@ -44,7 +46,7 @@ export function AuthGuard({
     }
     const timeout = window.setTimeout(() => {
       setShowFallback(true);
-    }, 4000);
+    }, 3000); // Slightly faster fallback
     return () => window.clearTimeout(timeout);
   }, [
     allowMissingProfile,
@@ -55,7 +57,9 @@ export function AuthGuard({
     showFallback,
   ]);
 
+  // 3. Onboarding / Dashboard redirection logic
   useEffect(() => {
+    // Only redirect if we have both Clerk and Convex auth + user data
     if (!isSignedIn || !isConvexAuthenticated || user === undefined) return;
     
     // Check if onboarding is complete (health data exists)
@@ -63,27 +67,45 @@ export function AuthGuard({
 
     if (!allowMissingProfile && !isProfileComplete) {
       router.replace("/onboarding");
-    }
-    if (allowMissingProfile && isProfileComplete) {
+    } else if (allowMissingProfile && isProfileComplete) {
       router.replace("/dashboard");
     }
   }, [allowMissingProfile, isConvexAuthenticated, isSignedIn, router, user]);
 
-  if (
-    !isLoaded ||
-    !isSignedIn ||
-    (allowMissingProfile && isConvexAuthLoading) ||
-    (!allowMissingProfile &&
-      !showFallback &&
-      (isConvexAuthLoading || !isConvexAuthenticated || user === undefined || user === null))
-  ) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-6 text-sm text-on-surface-variant">
-        Loading your tracker...
+  // Handle loading states
+  if (!isLoaded || !isSignedIn) {
+    return null; // Let the useEffect handle the redirect to sign-in
+  }
+
+  // If we are authenticated but waiting for user data from Convex (e.g. webhook delay)
+  if (isConvexAuthenticated && user === null) {
+     return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-center">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary border-t-transparent mb-4" />
+        <div className="text-sm font-medium text-white">Setting up your profile...</div>
+        <p className="mt-2 text-xs text-on-surface-variant">This should only take a moment.</p>
       </div>
     );
   }
 
+  // Show loading while auth or user data is initializing
+  if (
+    (allowMissingProfile && isConvexAuthLoading) ||
+    (!allowMissingProfile &&
+      !showFallback &&
+      (isConvexAuthLoading || !isConvexAuthenticated || user === undefined))
+  ) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-6 text-sm text-on-surface-variant">
+        <div className="flex items-center gap-3">
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          Loading your tracker...
+        </div>
+      </div>
+    );
+  }
+
+  // Show fallback if Convex auth fails to connect
   if (
     !allowMissingProfile &&
     showFallback &&
@@ -96,10 +118,6 @@ export function AuthGuard({
           <div className="text-lg font-semibold text-white">Connection check needed</div>
           <p className="mt-2 text-sm text-on-surface-variant">
             Clerk signed in, but Convex could not get a valid auth token for this session.
-          </p>
-          <p className="mt-2 text-xs text-on-surface-variant">
-            In Clerk Dashboard, either activate the Convex integration or create a JWT template named{" "}
-            <span className="font-semibold text-white">convex</span>, then sign out and sign back in.
           </p>
           <div className="mt-5 flex flex-col gap-3">
             <button
@@ -125,3 +143,4 @@ export function AuthGuard({
 
   return <>{children}</>;
 }
+

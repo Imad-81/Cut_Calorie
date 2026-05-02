@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body>
-        <ClerkProvider dynamic>
+        <ClerkProvider afterSignOutUrl="/sign-in">
           <ConvexClientProvider>{children}</ConvexClientProvider>
         </ClerkProvider>
         <PWARegister />
