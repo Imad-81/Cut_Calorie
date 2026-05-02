@@ -57,8 +57,13 @@ function DashboardScreen() {
     }
   }
 
-  const remainingCalories = user ? (user.dailyCalorieTarget - (summary?.totalCalories ?? 0)) : 0;
-  const remainingProtein = user ? (user.proteinTarget - (summary?.totalProtein ?? 0)) : 0;
+  const dailyCalorieTarget = user?.dailyCalorieTarget ?? 2000;
+  const proteinTarget = user?.proteinTarget ?? 150;
+  const carbsTarget = user?.carbsTarget ?? 250;
+  const fatsTarget = user?.fatsTarget ?? 70;
+
+  const remainingCalories = user ? (dailyCalorieTarget - (summary?.totalCalories ?? 0)) : 0;
+  const remainingProtein = user ? (proteinTarget - (summary?.totalProtein ?? 0)) : 0;
 
   // Added progressive skeleton loading to prevent navigation blank screens
   if (user === undefined) {
@@ -100,18 +105,18 @@ function DashboardScreen() {
           </div>
           <ProgressRing
             calories={summary?.totalCalories ?? 0}
-            calorieTarget={user.dailyCalorieTarget}
+            calorieTarget={dailyCalorieTarget}
             protein={summary?.totalProtein ?? 0}
-            proteinTarget={user.proteinTarget}
+            proteinTarget={proteinTarget}
             carbs={summary?.totalCarbs ?? 0}
-            carbsTarget={user.carbsTarget}
+            carbsTarget={carbsTarget}
             fats={summary?.totalFats ?? 0}
-            fatsTarget={user.fatsTarget}
+            fatsTarget={fatsTarget}
           />
           <div className="grid w-full grid-cols-3 gap-3">
-            <MacroPill label="Protein" value={summary?.totalProtein ?? 0} target={user.proteinTarget} color="bg-secondary" />
-            <MacroPill label="Carbs" value={summary?.totalCarbs ?? 0} target={user.carbsTarget} color="bg-tertiary" />
-            <MacroPill label="Fats" value={summary?.totalFats ?? 0} target={user.fatsTarget} color="bg-primary-soft" />
+            <MacroPill label="Protein" value={summary?.totalProtein ?? 0} target={proteinTarget} color="bg-secondary" />
+            <MacroPill label="Carbs" value={summary?.totalCarbs ?? 0} target={carbsTarget} color="bg-tertiary" />
+            <MacroPill label="Fats" value={summary?.totalFats ?? 0} target={fatsTarget} color="bg-primary-soft" />
           </div>
         </GlassCard>
 

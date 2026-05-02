@@ -8,25 +8,31 @@ export default defineSchema({
     name: v.string(),
     email: v.string(),
     avatarUrl: v.optional(v.string()),
-    height: v.number(),
-    age: v.number(),
-    gender: v.union(v.literal("male"), v.literal("female"), v.literal("other")),
-    activityLevel: v.union(
-      v.literal("sedentary"),
-      v.literal("light"),
-      v.literal("moderate"),
-      v.literal("active"),
-      v.literal("very_active"),
+    height: v.optional(v.number()),
+    age: v.optional(v.number()),
+    gender: v.optional(
+      v.union(v.literal("male"), v.literal("female"), v.literal("other")),
     ),
-    primaryObjective: v.union(
-      v.literal("fat_loss"),
-      v.literal("maintenance"),
-      v.literal("muscle_gain"),
+    activityLevel: v.optional(
+      v.union(
+        v.literal("sedentary"),
+        v.literal("light"),
+        v.literal("moderate"),
+        v.literal("active"),
+        v.literal("very_active"),
+      ),
     ),
-    dailyCalorieTarget: v.number(),
-    proteinTarget: v.number(),
-    carbsTarget: v.number(),
-    fatsTarget: v.number(),
+    primaryObjective: v.optional(
+      v.union(
+        v.literal("fat_loss"),
+        v.literal("maintenance"),
+        v.literal("muscle_gain"),
+      ),
+    ),
+    dailyCalorieTarget: v.optional(v.number()),
+    proteinTarget: v.optional(v.number()),
+    carbsTarget: v.optional(v.number()),
+    fatsTarget: v.optional(v.number()),
     createdAt: v.number(),
   })
     .index("by_clerkId", ["clerkId"])

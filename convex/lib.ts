@@ -8,6 +8,17 @@ export async function requireIdentity(ctx: QueryCtx | MutationCtx) {
   return identity;
 }
 
+export async function getCurrentUser(ctx: QueryCtx | MutationCtx) {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) return null;
+  return await ctx.db
+    .query("users")
+    .withIndex("by_tokenIdentifier", (q) =>
+      q.eq("tokenIdentifier", identity.tokenIdentifier),
+    )
+    .unique();
+}
+
 export async function requireCurrentUser(ctx: QueryCtx | MutationCtx) {
   const identity = await requireIdentity(ctx);
   const user = await ctx.db

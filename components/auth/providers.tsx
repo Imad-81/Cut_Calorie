@@ -15,10 +15,12 @@ function DataRetainer() {
   const from = shiftDate(today, -6);
   
   // Retain critical data in cache so page transitions are always instant
-  useQuery(api.users.getUserByClerkId, isSignedIn ? {} : "skip");
-  useQuery(api.foodLogs.getFoodLogsByDate, isSignedIn ? { date: today } : "skip");
-  useQuery(api.weightLogs.getWeightLogsByUserId, isSignedIn ? {} : "skip");
-  useQuery(api.dailySummaries.getDailySummariesByRange, isSignedIn ? { from, to: today } : "skip");
+  const user = useQuery(api.users.getUserByClerkId, isSignedIn ? {} : "skip");
+  const hasProfile = !!user;
+
+  useQuery(api.foodLogs.getFoodLogsByDate, isSignedIn && hasProfile ? { date: today } : "skip");
+  useQuery(api.weightLogs.getWeightLogsByUserId, isSignedIn && hasProfile ? {} : "skip");
+  useQuery(api.dailySummaries.getDailySummariesByRange, isSignedIn && hasProfile ? { from, to: today } : "skip");
   
   return null;
 }

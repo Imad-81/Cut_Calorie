@@ -121,25 +121,25 @@ function ProfileScreen() {
       name: currentClerkUser.fullName ?? currentUser.name,
       email: currentClerkUser.primaryEmailAddress?.emailAddress ?? currentUser.email,
       avatarUrl: currentClerkUser.imageUrl ?? currentUser.avatarUrl,
-      height: overrides.height ?? currentUser.height,
-      age: overrides.age ?? currentUser.age,
-      gender: overrides.gender ?? currentUser.gender,
-      activityLevel: overrides.activityLevel ?? currentUser.activityLevel,
-      primaryObjective: overrides.primaryObjective ?? currentUser.primaryObjective,
-      dailyCalorieTarget: overrides.dailyCalorieTarget ?? currentUser.dailyCalorieTarget,
-      proteinTarget: overrides.proteinTarget ?? currentUser.proteinTarget,
-      carbsTarget: overrides.carbsTarget ?? currentUser.carbsTarget,
-      fatsTarget: overrides.fatsTarget ?? currentUser.fatsTarget,
+      height: overrides.height ?? currentUser.height ?? 170,
+      age: overrides.age ?? currentUser.age ?? 25,
+      gender: overrides.gender ?? currentUser.gender ?? "male",
+      activityLevel: overrides.activityLevel ?? currentUser.activityLevel ?? "moderate",
+      primaryObjective: overrides.primaryObjective ?? currentUser.primaryObjective ?? "maintenance",
+      dailyCalorieTarget: overrides.dailyCalorieTarget ?? currentUser.dailyCalorieTarget ?? 2000,
+      proteinTarget: overrides.proteinTarget ?? currentUser.proteinTarget ?? 150,
+      carbsTarget: overrides.carbsTarget ?? currentUser.carbsTarget ?? 250,
+      fatsTarget: overrides.fatsTarget ?? currentUser.fatsTarget ?? 70,
     });
   }
 
   // ── Health editing handlers ───────────────────────────────────────────────
   function startEditHealth() {
     setHealthDraft({
-      height: String(currentUser.height),
-      age: String(currentUser.age),
-      gender: currentUser.gender,
-      activityLevel: currentUser.activityLevel,
+      height: String(currentUser.height ?? 170),
+      age: String(currentUser.age ?? 25),
+      gender: currentUser.gender ?? "male",
+      activityLevel: currentUser.activityLevel ?? "moderate",
     });
     setIsEditingHealth(true);
   }
@@ -250,10 +250,10 @@ function ProfileScreen() {
           {!isEditingHealth ? (
             /* Read-only grid */
             <div className="grid grid-cols-2 gap-3">
-              <StatChip label="Height" value={`${currentUser.height} cm`} />
-              <StatChip label="Age" value={`${currentUser.age} yrs`} />
-              <StatChip label="Gender" value={genderLabels[currentUser.gender]} />
-              <StatChip label="Activity" value={activityLabels[currentUser.activityLevel]} />
+              <StatChip label="Height" value={currentUser.height ? `${currentUser.height} cm` : "—"} />
+              <StatChip label="Age" value={currentUser.age ? `${currentUser.age} yrs` : "—"} />
+              <StatChip label="Gender" value={currentUser.gender ? genderLabels[currentUser.gender] : "—"} />
+              <StatChip label="Activity" value={currentUser.activityLevel ? activityLabels[currentUser.activityLevel] : "—"} />
               <StatChip label="Current Weight" value={latestWeight ? `${latestWeight.weight} kg` : "—"} />
               <StatChip label="BMI" value={bmi ? `${bmi}` : "—"} highlight={bmi !== null} />
             </div>
@@ -511,25 +511,25 @@ function ProfileScreen() {
           <div className="text-sm font-semibold text-white">Nutrition Targets</div>
           <EditableNumber
             label="Daily Calorie Target"
-            value={currentUser.dailyCalorieTarget}
+            value={currentUser.dailyCalorieTarget ?? 2000}
             suffix="kcal"
             onCommit={(v) => persistUser({ dailyCalorieTarget: v })}
           />
           <EditableNumber
             label="Protein Target"
-            value={currentUser.proteinTarget}
+            value={currentUser.proteinTarget ?? 150}
             suffix="g"
             onCommit={(v) => persistUser({ proteinTarget: v })}
           />
           <EditableNumber
             label="Carbs Target"
-            value={currentUser.carbsTarget}
+            value={currentUser.carbsTarget ?? 250}
             suffix="g"
             onCommit={(v) => persistUser({ carbsTarget: v })}
           />
           <EditableNumber
             label="Fats Target"
-            value={currentUser.fatsTarget}
+            value={currentUser.fatsTarget ?? 70}
             suffix="g"
             onCommit={(v) => persistUser({ fatsTarget: v })}
           />

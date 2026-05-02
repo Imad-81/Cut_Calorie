@@ -1,6 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { requireCurrentUser } from "./lib";
+import { requireCurrentUser, getCurrentUser } from "./lib";
 
 export const addWeightLog = mutation({
   args: { weight: v.number(), note: v.optional(v.string()) },
@@ -19,7 +19,8 @@ export const addWeightLog = mutation({
 export const getWeightLogsByUserId = query({
   args: {},
   handler: async (ctx) => {
-    const { user } = await requireCurrentUser(ctx);
+    const user = await getCurrentUser(ctx);
+    if (!user) return [];
     const now = Date.now();
     const from = now - 1000 * 60 * 60 * 24 * 7 * 12;
     return await ctx.db
@@ -47,7 +48,8 @@ export const deleteWeightLog = mutation({
 export const getLatestWeight = query({
   args: {},
   handler: async (ctx) => {
-    const { user } = await requireCurrentUser(ctx);
+    const user = await getCurrentUser(ctx);
+    if (!user) return null;
     return await ctx.db
       .query("weightLogs")
       .withIndex("by_userId_and_loggedAt", (q) => q.eq("userId", user.clerkId))

@@ -74,12 +74,19 @@ export const createOrUpdateUser = mutation({
     } else {
       await ctx.db.insert("users", nextUser);
     }
-    if (args.currentWeightKg !== undefined && !existing) {
-      await ctx.db.insert("weightLogs", {
-        userId: clerkId,
-        weight: args.currentWeightKg,
-        loggedAt: Date.now(),
-      });
+    if (args.currentWeightKg !== undefined) {
+      const existingWeight = await ctx.db
+        .query("weightLogs")
+        .withIndex("by_userId_and_loggedAt", (q) => q.eq("userId", clerkId))
+        .first();
+      
+      if (!existingWeight) {
+        await ctx.db.insert("weightLogs", {
+          userId: clerkId,
+          weight: args.currentWeightKg,
+          loggedAt: Date.now(),
+        });
+      }
     }
     return clerkId;
   },

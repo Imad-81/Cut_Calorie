@@ -57,10 +57,14 @@ export function AuthGuard({
 
   useEffect(() => {
     if (!isSignedIn || !isConvexAuthenticated || user === undefined) return;
-    if (!allowMissingProfile && user === null) {
+    
+    // Check if onboarding is complete (health data exists)
+    const isProfileComplete = !!(user && user.height && user.dailyCalorieTarget);
+
+    if (!allowMissingProfile && !isProfileComplete) {
       router.replace("/onboarding");
     }
-    if (allowMissingProfile && user) {
+    if (allowMissingProfile && isProfileComplete) {
       router.replace("/dashboard");
     }
   }, [allowMissingProfile, isConvexAuthenticated, isSignedIn, router, user]);

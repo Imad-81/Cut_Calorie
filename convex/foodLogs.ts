@@ -1,6 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { requireCurrentUser } from "./lib";
+import { requireCurrentUser, getCurrentUser } from "./lib";
 import { recomputeDailySummary } from "./dailySummaries";
 
 export const addFoodLog = mutation({
@@ -37,7 +37,8 @@ export const addFoodLog = mutation({
 export const getFoodLogsByDate = query({
   args: { date: v.string() },
   handler: async (ctx, args) => {
-    const { user } = await requireCurrentUser(ctx);
+    const user = await getCurrentUser(ctx);
+    if (!user) return [];
     return await ctx.db
       .query("foodLogs")
       .withIndex("by_userId_and_date", (q) =>
@@ -50,7 +51,8 @@ export const getFoodLogsByDate = query({
 export const getFoodLogsByDateRange = query({
   args: { from: v.string(), to: v.string() },
   handler: async (ctx, args) => {
-    const { user } = await requireCurrentUser(ctx);
+    const user = await getCurrentUser(ctx);
+    if (!user) return [];
     return await ctx.db
       .query("foodLogs")
       .withIndex("by_userId_and_date", (q) =>

@@ -1,15 +1,16 @@
 import { mutation, query, MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
-import { requireCurrentUser } from "./lib";
+import { requireCurrentUser, getCurrentUser } from "./lib";
 
 async function recomputeDailySummary(
   ctx: MutationCtx,
   user: {
     clerkId: string;
-    dailyCalorieTarget: number;
+    dailyCalorieTarget?: number;
   },
   date: string,
 ) {
+  const calorieTarget = user.dailyCalorieTarget ?? 2000; // Fallback to 2000 if not set
   const logs = await ctx.db
     .query("foodLogs")
     .withIndex("by_userId_and_date", (q) =>
@@ -45,7 +46,7 @@ async function recomputeDailySummary(
   if (existing) {
     await ctx.db.patch(existing._id, {
       ...totals,
-      calorieTarget: user.dailyCalorieTarget,
+      calorieTarget: calorieTarget,
       streak,
     });
     return;
@@ -54,7 +55,7 @@ async function recomputeDailySummary(
     userId: user.clerkId,
     date,
     ...totals,
-    calorieTarget: user.dailyCalorieTarget,
+    calorieTarget: calorieTarget,
     streak,
   });
 }
@@ -71,7 +72,8 @@ export const upsertDailySummary = mutation({
 export const getDailySummariesByRange = query({
   args: { from: v.string(), to: v.string() },
   handler: async (ctx, args) => {
-    const { user } = await requireCurrentUser(ctx);
+    const user = await getCurrentUser(ctx);
+    if (!user) return [];
     return await ctx.db
       .query("dailySummaries")
       .withIndex("by_userId_and_date", (q) =>
