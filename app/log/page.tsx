@@ -13,6 +13,7 @@ import { mealTypes, mealTypeLabels } from "@/lib/constants";
 import type { FoodAnalysisResult } from "@/lib/food-analysis";
 import { todayKey } from "@/lib/nutrition";
 import { cn } from "@/lib/utils";
+import imageCompression from "browser-image-compression";
 
 import { PageTransition } from "@/components/ui/page-transition";
 
@@ -230,15 +231,39 @@ function LogScreen() {
                 onChange={async (e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
+
+                  // Show preview immediately for responsiveness
                   setImagePreviewUrl(URL.createObjectURL(file));
                   setAnalysis(null);
+
+                  const originalSizeMB = file.size / 1024 / 1024;
+                  console.log(`[Image] Original size: ${originalSizeMB.toFixed(2)} MB`);
+
+                  let processedFile = file;
+
+                  try {
+                    const options = {
+                      maxSizeMB: 1,
+                      maxWidthOrHeight: 1024,
+                      useWebWorker: true,
+                      fileType: "image/jpeg" as const,
+                    };
+
+                    processedFile = await imageCompression(file, options);
+                    const compressedSizeMB = processedFile.size / 1024 / 1024;
+                    console.log(`[Image] Compressed size: ${compressedSizeMB.toFixed(2)} MB`);
+                  } catch (error) {
+                    console.warn("[Image] Compression failed, falling back to original:", error);
+                    // Fallback: processedFile remains the original file
+                  }
+
                   const reader = new FileReader();
                   reader.onload = () => {
                     const value = String(reader.result ?? "");
                     setImageBase64(value.split(",")[1]);
-                    setMimeType(file.type);
+                    setMimeType(processedFile.type);
                   };
-                  reader.readAsDataURL(file);
+                  reader.readAsDataURL(processedFile);
                 }}
               />
             </label>
