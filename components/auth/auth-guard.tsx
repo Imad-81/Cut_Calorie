@@ -20,6 +20,8 @@ export function AuthGuard({
     isLoading: isConvexAuthLoading,
   } = useConvexAuth();
   const [showFallback, setShowFallback] = useState(false);
+  // If user is null (not in DB) for too long, redirect to onboarding
+  const [webhookTimeout, setWebhookTimeout] = useState(false);
   const user = useQuery(
     api.users.getUserByClerkId,
     isSignedIn && isConvexAuthenticated ? {} : "skip",
@@ -56,6 +58,23 @@ export function AuthGuard({
     isSignedIn,
     showFallback,
   ]);
+
+  // 2b. Webhook timeout: if user is null in Convex after 4s, the webhook
+  // likely failed — redirect to /onboarding so createOrUpdateUser can create
+  // the record directly without relying on the webhook.
+  useEffect(() => {
+    if (!isConvexAuthenticated || user !== null || allowMissingProfile) return;
+    const timeout = window.setTimeout(() => {
+      setWebhookTimeout(true);
+    }, 4000);
+    return () => window.clearTimeout(timeout);
+  }, [allowMissingProfile, isConvexAuthenticated, user]);
+
+  useEffect(() => {
+    if (webhookTimeout) {
+      router.replace("/onboarding");
+    }
+  }, [webhookTimeout, router]);
 
   // 3. Onboarding / Dashboard redirection logic
   useEffect(() => {
