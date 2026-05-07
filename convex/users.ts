@@ -2,6 +2,34 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireIdentity } from "./lib";
 
+// Lightweight upsert called from the client when getUserByClerkId returns null.
+// Creates a minimal user row using the Clerk JWT identity — no webhook needed.
+export const ensureUser = mutation({
+  args: {
+    name: v.string(),
+    email: v.string(),
+    avatarUrl: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await requireIdentity(ctx);
+    const existing = await ctx.db
+      .query("users")
+      .withIndex("by_tokenIdentifier", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
+      )
+      .unique();
+    if (existing) return existing._id;
+    return await ctx.db.insert("users", {
+      clerkId: identity.subject,
+      tokenIdentifier: identity.tokenIdentifier,
+      name: args.name,
+      email: args.email,
+      avatarUrl: args.avatarUrl,
+      createdAt: Date.now(),
+    });
+  },
+});
+
 export const getUserByClerkId = query({
   args: {},
   handler: async (ctx) => {
