@@ -72,12 +72,9 @@ export function AuthGuard({
       return;
     }
     ensureCalledRef.current = true;
-    const name =
-      clerkUser.fullName ??
-      `${clerkUser.firstName ?? ""} ${clerkUser.lastName ?? ""}`.trim() ||
-      "User";
-    const email =
-      clerkUser.primaryEmailAddress?.emailAddress ?? "";
+    const fallbackName = `${clerkUser.firstName ?? ""} ${clerkUser.lastName ?? ""}`.trim();
+    const name = (clerkUser.fullName || fallbackName) || "User";
+    const email = clerkUser.primaryEmailAddress?.emailAddress ?? "";
     const avatarUrl = clerkUser.imageUrl ?? undefined;
 
     ensureUserMutation({ name, email, avatarUrl })
